@@ -39,11 +39,15 @@ queryClient.getMutationCache().subscribe(event => {
 
 // Get API URL from environment or use relative path for same-origin requests
 const getApiUrl = () => {
-  // If VITE_API_URL is set (for Vercel deployment), use it
+  // On Vercel (nala-loans.vercel.app), use Manus backend
+  if (window.location.hostname === "nala-loans.vercel.app") {
+    return "https://nalaloans-hjhv9quk.manus.space/api/trpc";
+  }
+  // If VITE_API_URL is set (for custom domains), use it
   if (import.meta.env.VITE_API_URL && import.meta.env.VITE_API_URL !== window.location.origin) {
     return `${import.meta.env.VITE_API_URL}/api/trpc`;
   }
-  // Otherwise use relative path (for same-origin requests)
+  // Otherwise use relative path (for same-origin requests on localhost)
   return "/api/trpc";
 };
 
