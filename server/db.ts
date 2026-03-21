@@ -1,7 +1,17 @@
-import { eq } from "drizzle-orm";
+import { eq, and, desc } from "drizzle-orm";
 import { drizzle } from "drizzle-orm/mysql2";
-import { InsertUser, users } from "../drizzle/schema";
-import { ENV } from './_core/env';
+import {
+  InsertUser,
+  users,
+  loanProducts,
+  loanApplications,
+  loans,
+  payments,
+  educationalContent,
+  eligibilityCriteria,
+  otpVerifications,
+} from "../drizzle/schema";
+import { ENV } from "./_core/env";
 
 let _db: ReturnType<typeof drizzle> | null = null;
 
@@ -56,8 +66,8 @@ export async function upsertUser(user: InsertUser): Promise<void> {
       values.role = user.role;
       updateSet.role = user.role;
     } else if (user.openId === ENV.ownerOpenId) {
-      values.role = 'admin';
-      updateSet.role = 'admin';
+      values.role = "admin";
+      updateSet.role = "admin";
     }
 
     if (!values.lastSignedIn) {
@@ -84,9 +94,249 @@ export async function getUserByOpenId(openId: string) {
     return undefined;
   }
 
-  const result = await db.select().from(users).where(eq(users.openId, openId)).limit(1);
+  const result = await db
+    .select()
+    .from(users)
+    .where(eq(users.openId, openId))
+    .limit(1);
 
   return result.length > 0 ? result[0] : undefined;
 }
 
-// TODO: add feature queries here as your schema grows.
+export async function getUserById(id: number) {
+  const db = await getDb();
+  if (!db) return undefined;
+
+  const result = await db.select().from(users).where(eq(users.id, id)).limit(1);
+  return result.length > 0 ? result[0] : undefined;
+}
+
+export async function updateUserProfile(
+  userId: number,
+  data: Partial<InsertUser>
+) {
+  const db = await getDb();
+  if (!db) return null;
+
+  await db.update(users).set(data).where(eq(users.id, userId));
+  return getUserById(userId);
+}
+
+// Loan Products
+export async function getLoanProducts() {
+  const db = await getDb();
+  if (!db) return [];
+
+  return db
+    .select()
+    .from(loanProducts)
+    .where(eq(loanProducts.isActive, true));
+}
+
+export async function getLoanProductById(id: number) {
+  const db = await getDb();
+  if (!db) return null;
+
+  const result = await db
+    .select()
+    .from(loanProducts)
+    .where(eq(loanProducts.id, id))
+    .limit(1);
+  return result.length > 0 ? result[0] : null;
+}
+
+// Loan Applications
+export async function createLoanApplication(data: any) {
+  const db = await getDb();
+  if (!db) return null;
+
+  const result = await db.insert(loanApplications).values(data);
+  return result;
+}
+
+export async function getLoanApplications(userId: number) {
+  const db = await getDb();
+  if (!db) return [];
+
+  return db
+    .select()
+    .from(loanApplications)
+    .where(eq(loanApplications.userId, userId))
+    .orderBy(desc(loanApplications.createdAt));
+}
+
+export async function getLoanApplicationById(id: number) {
+  const db = await getDb();
+  if (!db) return null;
+
+  const result = await db
+    .select()
+    .from(loanApplications)
+    .where(eq(loanApplications.id, id))
+    .limit(1);
+  return result.length > 0 ? result[0] : null;
+}
+
+export async function updateLoanApplication(id: number, data: any) {
+  const db = await getDb();
+  if (!db) return null;
+
+  await db.update(loanApplications).set(data).where(eq(loanApplications.id, id));
+  return getLoanApplicationById(id);
+}
+
+// Active Loans
+export async function getUserLoans(userId: number) {
+  const db = await getDb();
+  if (!db) return [];
+
+  return db
+    .select()
+    .from(loans)
+    .where(eq(loans.userId, userId))
+    .orderBy(desc(loans.createdAt));
+}
+
+export async function getLoanById(id: number) {
+  const db = await getDb();
+  if (!db) return null;
+
+  const result = await db.select().from(loans).where(eq(loans.id, id)).limit(1);
+  return result.length > 0 ? result[0] : null;
+}
+
+export async function createLoan(data: any) {
+  const db = await getDb();
+  if (!db) return null;
+
+  const result = await db.insert(loans).values(data);
+  return result;
+}
+
+// Payments
+export async function getPaymentsByLoanId(loanId: number) {
+  const db = await getDb();
+  if (!db) return [];
+
+  return db
+    .select()
+    .from(payments)
+    .where(eq(payments.loanId, loanId))
+    .orderBy(desc(payments.createdAt));
+}
+
+export async function getPaymentsByUserId(userId: number) {
+  const db = await getDb();
+  if (!db) return [];
+
+  return db
+    .select()
+    .from(payments)
+    .where(eq(payments.userId, userId))
+    .orderBy(desc(payments.createdAt));
+}
+
+export async function createPayment(data: any) {
+  const db = await getDb();
+  if (!db) return null;
+
+  const result = await db.insert(payments).values(data);
+  return result;
+}
+
+export async function updatePayment(id: number, data: any) {
+  const db = await getDb();
+  if (!db) return null;
+
+  await db.update(payments).set(data).where(eq(payments.id, id));
+  return db.select().from(payments).where(eq(payments.id, id)).limit(1);
+}
+
+// Educational Content
+export async function getEducationalContent(category?: string) {
+  const db = await getDb();
+  if (!db) return [];
+
+  let query = db
+    .select()
+    .from(educationalContent)
+    .where(eq(educationalContent.isPublished, true));
+
+  if (category) {
+    query = db
+      .select()
+      .from(educationalContent)
+      .where(
+        and(
+          eq(educationalContent.isPublished, true),
+          eq(educationalContent.category, category as any)
+        )
+      );
+  }
+
+  return query.orderBy(desc(educationalContent.publishedAt));
+}
+
+export async function getEducationalContentBySlug(slug: string) {
+  const db = await getDb();
+  if (!db) return null;
+
+  const result = await db
+    .select()
+    .from(educationalContent)
+    .where(eq(educationalContent.slug, slug))
+    .limit(1);
+  return result.length > 0 ? result[0] : null;
+}
+
+// Eligibility Criteria
+export async function getEligibilityCriteria() {
+  const db = await getDb();
+  if (!db) return null;
+
+  const result = await db.select().from(eligibilityCriteria).limit(1);
+  return result.length > 0 ? result[0] : null;
+}
+
+// OTP Verification
+export async function createOtpVerification(data: any) {
+  const db = await getDb();
+  if (!db) return null;
+
+  const result = await db.insert(otpVerifications).values(data);
+  return result;
+}
+
+export async function getOtpVerification(userId: number, type: string) {
+  const db = await getDb();
+  if (!db) return null;
+
+  const result = await db
+    .select()
+    .from(otpVerifications)
+    .where(
+      and(
+        eq(otpVerifications.userId, userId),
+        eq(otpVerifications.type, type as any)
+      )
+    )
+    .orderBy(desc(otpVerifications.createdAt))
+    .limit(1);
+
+  return result.length > 0 ? result[0] : null;
+}
+
+export async function updateOtpVerification(id: number, data: any) {
+  const db = await getDb();
+  if (!db) return null;
+
+  await db
+    .update(otpVerifications)
+    .set(data)
+    .where(eq(otpVerifications.id, id));
+  return db
+    .select()
+    .from(otpVerifications)
+    .where(eq(otpVerifications.id, id))
+    .limit(1);
+}
