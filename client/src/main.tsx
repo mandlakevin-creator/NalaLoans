@@ -37,10 +37,20 @@ queryClient.getMutationCache().subscribe(event => {
   }
 });
 
+// Get API URL from environment or use relative path for same-origin requests
+const getApiUrl = () => {
+  // If VITE_API_URL is set (for Vercel deployment), use it
+  if (import.meta.env.VITE_API_URL && import.meta.env.VITE_API_URL !== window.location.origin) {
+    return `${import.meta.env.VITE_API_URL}/api/trpc`;
+  }
+  // Otherwise use relative path (for same-origin requests)
+  return "/api/trpc";
+};
+
 const trpcClient = trpc.createClient({
   links: [
     httpBatchLink({
-      url: "/api/trpc",
+      url: getApiUrl(),
       transformer: superjson,
       fetch(input, init) {
         return globalThis.fetch(input, {
