@@ -1,31 +1,38 @@
-import { useAuth } from "@/_core/hooks/useAuth";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Slider } from "@/components/ui/slider";
 import { ArrowRight, CheckCircle, DollarSign, TrendingUp, Users, Zap } from "lucide-react";
 import { getLoginUrl } from "@/const";
 import { useState, useMemo } from "react";
-import { trpc } from "@/lib/trpc";
-import { Loader2 } from "lucide-react";
+import { useAuth } from "@/_core/hooks/useAuth";
 
 export default function Home() {
   const { user, isAuthenticated, logout } = useAuth();
   const [loanAmount, setLoanAmount] = useState(5000);
   const [loanPeriod, setLoanPeriod] = useState(30);
 
-  // Get loan products for calculator
-  const { data: products, isLoading: productsLoading } = trpc.calculator.getLoanProducts.useQuery();
-
-  // Calculate loan details
-  const { data: calculation } = trpc.calculator.calculateLoan.useQuery(
-    {
-      amount: loanAmount,
-      periodDays: loanPeriod,
-      interestRate: 40, // NALA's interest rate (40% annual)
-      processingFee: 5, // 5% processing fee
-    },
-    { enabled: !!products }
-  );
+  // Client-side loan calculation (no API calls needed)
+  const calculation = useMemo(() => {
+    const ANNUAL_INTEREST_RATE = 0.40; // 40% annual interest (20% NCR cap + 20% admin fees)
+    const PROCESSING_FEE_PERCENT = 0.05; // 5% processing fee
+    
+    const principal = loanAmount;
+    const dailyRate = ANNUAL_INTEREST_RATE / 365;
+    const interest = Math.round(principal * dailyRate * loanPeriod);
+    const processingFee = Math.round(principal * PROCESSING_FEE_PERCENT);
+    const totalRepayment = principal + interest + processingFee;
+    const monthlyInstallment = Math.round(totalRepayment / (loanPeriod / 30));
+    
+    return {
+      principal,
+      interest,
+      processingFee,
+      totalRepayment,
+      monthlyInstallment,
+      dailyRate,
+      loanPeriod,
+    };
+  }, [loanAmount, loanPeriod]);
 
   return (
     <div className="min-h-screen bg-background">
@@ -164,43 +171,37 @@ export default function Home() {
                 </div>
 
                 {/* Calculation Results */}
-                {calculation ? (
-                  <div className="bg-muted/50 rounded-lg p-6 space-y-4">
-                    <div className="grid grid-cols-2 gap-4">
-                      <div>
-                        <p className="text-sm text-muted-foreground">Principal</p>
-                        <p className="text-lg font-semibold">R{calculation.principal.toLocaleString()}</p>
-                      </div>
-                      <div>
-                        <p className="text-sm text-muted-foreground">Interest</p>
-                        <p className="text-lg font-semibold">R{calculation.interest.toLocaleString()}</p>
-                      </div>
-                      <div>
-                        <p className="text-sm text-muted-foreground">Processing Fee</p>
-                        <p className="text-lg font-semibold">R{calculation.processingFee.toLocaleString()}</p>
-                      </div>
-                      <div>
-                        <p className="text-sm text-muted-foreground">Total Repayment</p>
-                        <p className="text-lg font-semibold text-primary">R{calculation.totalRepayment.toLocaleString()}</p>
-                      </div>
+                <div className="bg-muted/50 rounded-lg p-6 space-y-4">
+                  <div className="grid grid-cols-2 gap-4">
+                    <div>
+                      <p className="text-sm text-muted-foreground">Principal</p>
+                      <p className="text-lg font-semibold">R{calculation.principal.toLocaleString()}</p>
                     </div>
+                    <div>
+                      <p className="text-sm text-muted-foreground">Interest (40%)</p>
+                      <p className="text-lg font-semibold">R{calculation.interest.toLocaleString()}</p>
+                    </div>
+                    <div>
+                      <p className="text-sm text-muted-foreground">Processing Fee</p>
+                      <p className="text-lg font-semibold">R{calculation.processingFee.toLocaleString()}</p>
+                    </div>
+                    <div>
+                      <p className="text-sm text-muted-foreground">Total Repayment</p>
+                      <p className="text-lg font-semibold text-primary">R{calculation.totalRepayment.toLocaleString()}</p>
+                    </div>
+                  </div>
 
-                    <div className="border-t border-border pt-4">
-                      <p className="text-sm text-muted-foreground mb-2">Monthly Installment</p>
-                      <p className="text-3xl font-bold text-primary">R{calculation.monthlyInstallment.toLocaleString()}</p>
-                    </div>
+                  <div className="border-t border-border pt-4">
+                    <p className="text-sm text-muted-foreground mb-2">Monthly Installment</p>
+                    <p className="text-3xl font-bold text-primary">R{calculation.monthlyInstallment.toLocaleString()}</p>
                   </div>
-                ) : (
-                  <div className="bg-muted/50 rounded-lg p-6 flex items-center justify-center h-40">
-                    <Loader2 className="w-6 h-6 animate-spin text-muted-foreground" />
-                  </div>
-                )}
+                </div>
 
                 <Button 
                   className="w-full bg-primary hover:bg-primary/90 h-12 text-base"
                   onClick={() => (window.location.href = getLoginUrl())}
                 >
-                  Apply for This Loan
+                  Apply for This Loan <ArrowRight className="ml-2 w-4 h-4" />
                 </Button>
               </CardContent>
             </Card>
@@ -209,9 +210,9 @@ export default function Home() {
       </section>
 
       {/* Features Section */}
-      <section id="features" className="py-16 md:py-24 bg-muted/30">
+      <section id="features" className="py-16 md:py-24 bg-muted/50">
         <div className="container">
-          <div className="text-center mb-12">
+          <div className="text-center mb-16">
             <h2 className="text-3xl md:text-4xl font-bold mb-4">Why Choose NALA?</h2>
             <p className="text-lg text-muted-foreground">
               We make borrowing simple, transparent, and accessible to everyone
@@ -223,113 +224,96 @@ export default function Home() {
               {
                 icon: Zap,
                 title: "Quick & Flexible",
-                description: "Get approved in minutes and receive funds instantly. Loans available for all purposes.",
+                description: "Get approved in minutes and receive funds instantly. Loans available for all purposes."
               },
               {
-                icon: TrendingUp,
+                icon: DollarSign,
                 title: "Transparent Pricing",
-                description: "No hidden fees. See exactly what you'll pay before you apply. 40% interest rate on all loans.",
+                description: "No hidden fees. See exactly what you'll pay before you apply. 40% interest rate on all loans."
               },
               {
                 icon: CheckCircle,
                 title: "Easy Application",
-                description: "Simple online process. Just provide your ID, income details, and bank account information.",
+                description: "Simple online process. Just provide your ID, income details, and bank account information."
               },
               {
                 icon: Users,
                 title: "Trusted by Thousands",
-                description: "Join thousands of South Africans who trust NALA for their financial needs.",
+                description: "Join thousands of South Africans who trust NALA for their financial needs."
               },
               {
-                icon: DollarSign,
+                icon: TrendingUp,
                 title: "Flexible Repayment",
-                description: "Choose your repayment period from 7 to 180 days. Pay early without penalties.",
+                description: "Choose your repayment period from 7 to 180 days. Pay early without penalties."
               },
               {
-                icon: ArrowRight,
+                icon: CheckCircle,
                 title: "24/7 Support",
-                description: "Our customer support team is always ready to help with your questions and concerns.",
-              },
-            ].map((feature, index) => {
-              const Icon = feature.icon;
-              return (
-                <Card key={index} className="border-border hover:border-primary/50 transition-colors">
-                  <CardHeader>
-                    <Icon className="w-10 h-10 text-primary mb-4" />
-                    <CardTitle className="text-xl">{feature.title}</CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    <p className="text-muted-foreground">{feature.description}</p>
-                  </CardContent>
-                </Card>
-              );
-            })}
+                description: "Our customer support team is always ready to help with your questions and concerns."
+              }
+            ].map((feature, i) => (
+              <Card key={i} className="border-border">
+                <CardContent className="pt-6">
+                  <feature.icon className="w-12 h-12 text-primary mb-4" />
+                  <h3 className="text-xl font-semibold mb-2">{feature.title}</h3>
+                  <p className="text-muted-foreground">{feature.description}</p>
+                </CardContent>
+              </Card>
+            ))}
           </div>
         </div>
       </section>
 
       {/* CTA Section */}
-      <section className="py-16 md:py-24 bg-gradient-to-r from-primary to-primary/80 text-primary-foreground">
+      <section className="py-16 md:py-24 bg-primary text-primary-foreground">
         <div className="container text-center">
           <h2 className="text-3xl md:text-4xl font-bold mb-6">Ready to Get Your Loan?</h2>
-          <p className="text-lg mb-8 opacity-90 max-w-2xl mx-auto">
+          <p className="text-lg mb-8 opacity-90">
             Apply now and get approved in minutes. Our simple process makes it easy to get the funds you need.
           </p>
-          <Button
-            size="lg"
-            className="bg-primary-foreground text-primary hover:bg-primary-foreground/90"
-            onClick={() => {
-              const loginUrl = getLoginUrl();
-              window.location.href = loginUrl;
-            }}
+          <Button 
+            size="lg" 
+            variant="secondary"
+            onClick={() => (window.location.href = getLoginUrl())}
           >
-            Start Your Application
+            Start Your Application <ArrowRight className="ml-2 w-4 h-4" />
           </Button>
         </div>
       </section>
 
       {/* Footer */}
-      <footer className="border-t border-border bg-muted/30 py-12">
+      <footer className="border-t border-border bg-background py-12">
         <div className="container">
           <div className="grid md:grid-cols-4 gap-8 mb-8">
             <div>
-              <div className="flex items-center gap-2 mb-4">
-                <div className="w-8 h-8 rounded-full bg-primary flex items-center justify-center">
-                  <span className="text-primary-foreground font-bold text-sm">N</span>
-                </div>
-                <span className="font-bold">NALA</span>
-              </div>
-              <p className="text-sm text-muted-foreground">Fast, Simple, & Honest Personal Loans</p>
+              <h3 className="font-semibold mb-4">NALA</h3>
+              <p className="text-sm text-muted-foreground">Fast, simple, and honest personal loans for South Africa.</p>
             </div>
-
             <div>
               <h4 className="font-semibold mb-4">Product</h4>
-              <ul className="space-y-2 text-sm text-muted-foreground">
-                <li><a href="#" className="hover:text-primary transition-colors">Loan Calculator</a></li>
-                <li><a href="#" className="hover:text-primary transition-colors">How It Works</a></li>
-                <li><a href="#" className="hover:text-primary transition-colors">Eligibility</a></li>
+              <ul className="space-y-2 text-sm">
+                <li><a href="#calculator" className="text-muted-foreground hover:text-foreground">Loan Calculator</a></li>
+                <li><a href="#features" className="text-muted-foreground hover:text-foreground">How It Works</a></li>
+                <li><a href="#" className="text-muted-foreground hover:text-foreground">Eligibility</a></li>
               </ul>
             </div>
-
             <div>
               <h4 className="font-semibold mb-4">Company</h4>
-              <ul className="space-y-2 text-sm text-muted-foreground">
-                <li><a href="#" className="hover:text-primary transition-colors">About Us</a></li>
-                <li><a href="#" className="hover:text-primary transition-colors">Blog</a></li>
-                <li><a href="#" className="hover:text-primary transition-colors">Contact</a></li>
+              <ul className="space-y-2 text-sm">
+                <li><a href="#" className="text-muted-foreground hover:text-foreground">About Us</a></li>
+                <li><a href="#" className="text-muted-foreground hover:text-foreground">Blog</a></li>
+                <li><a href="#" className="text-muted-foreground hover:text-foreground">Contact</a></li>
               </ul>
             </div>
-
             <div>
               <h4 className="font-semibold mb-4">Legal</h4>
-              <ul className="space-y-2 text-sm text-muted-foreground">
-                <li><a href="#" className="hover:text-primary transition-colors">Privacy Policy</a></li>
-                <li><a href="#" className="hover:text-primary transition-colors">Terms of Service</a></li>
-                <li><a href="#" className="hover:text-primary transition-colors">Code of Practice</a></li>
+              <ul className="space-y-2 text-sm">
+                <li><a href="#" className="text-muted-foreground hover:text-foreground">Privacy Policy</a></li>
+                <li><a href="#" className="text-muted-foreground hover:text-foreground">Terms of Service</a></li>
+                <li><a href="#" className="text-muted-foreground hover:text-foreground">Code of Practice</a></li>
               </ul>
             </div>
           </div>
-
           <div className="border-t border-border pt-8 text-center text-sm text-muted-foreground">
             <p>&copy; 2026 NALA Personal Loans. All rights reserved.</p>
           </div>
