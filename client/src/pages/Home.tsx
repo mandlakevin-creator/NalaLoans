@@ -80,10 +80,18 @@ export default function Home() {
                 Get the funds you need with confidence. NALA offers quick, flexible personal loans with transparent terms and instant decisions.
               </p>
               <div className="flex flex-col sm:flex-row gap-4">
-                <Button size="lg" className="bg-primary hover:bg-primary/90">
+                <Button 
+                  size="lg" 
+                  className="bg-primary hover:bg-primary/90"
+                  onClick={() => (window.location.href = getLoginUrl())}
+                >
                   Apply Now <ArrowRight className="ml-2 w-4 h-4" />
                 </Button>
-                <Button size="lg" variant="outline">
+                <Button 
+                  size="lg" 
+                  variant="outline"
+                  onClick={() => (window.location.href = "#features")}
+                >
                   Learn More
                 </Button>
               </div>
@@ -188,7 +196,10 @@ export default function Home() {
                   </div>
                 )}
 
-                <Button className="w-full bg-primary hover:bg-primary/90 h-12 text-base">
+                <Button 
+                  className="w-full bg-primary hover:bg-primary/90 h-12 text-base"
+                  onClick={() => (window.location.href = getLoginUrl())}
+                >
                   Apply for This Loan
                 </Button>
               </CardContent>
@@ -267,7 +278,10 @@ export default function Home() {
           <Button
             size="lg"
             className="bg-primary-foreground text-primary hover:bg-primary-foreground/90"
-            onClick={() => (window.location.href = getLoginUrl())}
+            onClick={() => {
+              const loginUrl = getLoginUrl();
+              window.location.href = loginUrl;
+            }}
           >
             Start Your Application
           </Button>

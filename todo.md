@@ -63,3 +63,12 @@
 - [ ] Set up monitoring and analytics
 - [ ] Create deployment checklist
 - [ ] Prepare launch documentation
+
+## MVP Priority Tasks
+- [x] Fix interest calculation: 40% total (20% NCR cap + 20% admin fees)
+- [x] Make all buttons fully functional with proper navigation
+- [x] Create complete loan application workflow
+- [ ] Implement Stripe payment integration
+- [ ] Add loan repayment system
+- [ ] Push to GitHub repository
+- [ ] Final MVP testing and optimization

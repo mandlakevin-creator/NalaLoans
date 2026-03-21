@@ -26,20 +26,18 @@ export const appRouter = router({
         z.object({
           amount: z.number().min(1000).max(50000),
           periodDays: z.number().min(7).max(180),
-          interestRate: z.number(), // Annual percentage rate
+          interestRate: z.number().optional(),
           processingFee: z.number().optional(),
         })
       )
       .query(({ input }) => {
-        const { amount, periodDays, interestRate, processingFee = 0 } = input;
+        const { amount, periodDays, interestRate = 40, processingFee = 0 } = input;
 
-        // Calculate daily interest rate
+        // NALA Interest Structure: 40% total annual
+        // - 20% NCR regulated cap
+        // - 20% admin fees for operational costs
         const dailyRate = interestRate / 100 / 365;
-
-        // Calculate interest for the loan period
         const interest = amount * dailyRate * periodDays;
-
-        // Calculate processing fee
         const fee = (amount * processingFee) / 100;
 
         // Total repayment

@@ -7,6 +7,7 @@ import { ThemeProvider } from "./contexts/ThemeContext";
 import Home from "./pages/Home";
 import Dashboard from "./pages/Dashboard";
 import EligibilityChecker from "./pages/EligibilityChecker";
+import LoanApplication from "./pages/LoanApplication";
 import { useAuth } from "@/_core/hooks/useAuth";
 import { Loader2 } from "lucide-react";
 
@@ -33,6 +34,7 @@ function Router() {
     <Switch>
       <Route path={"/"} component={Home} />
       <Route path={"/eligibility"} component={EligibilityChecker} />
+      <Route path={"/apply"} component={() => <ProtectedRoute component={LoanApplication} />} />
       <Route path={"/dashboard"} component={() => <ProtectedRoute component={Dashboard} />} />
       <Route path={"/404"} component={NotFound} />
       {/* Final fallback route */}
