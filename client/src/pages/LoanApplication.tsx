@@ -557,8 +557,8 @@ export default function LoanApplication() {
                         <span>R{calculation.principal.toLocaleString()}</span>
                       </div>
                       <div className="flex justify-between text-sm">
-                        <span className="text-muted-foreground">Interest (40%)</span>
-                        <span>R{calculation.interest.toLocaleString()}</span>
+                        <span className="text-muted-foreground">Interest & Fees</span>
+                        <span>R{calculation.totalFees.toLocaleString()}</span>
                       </div>
                       <div className="flex justify-between text-sm font-bold border-t border-border pt-2">
                         <span>Total Repayment</span>

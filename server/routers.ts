@@ -31,30 +31,29 @@ export const appRouter = router({
         })
       )
       .query(({ input }) => {
-        const { amount, periodDays, interestRate = 40, processingFee = 0 } = input;
+        const { amount, periodDays } = input;
 
-        // NALA Interest Structure: 40% total annual
-        // - 20% NCR regulated cap
-        // - 20% admin fees for operational costs
-        const dailyRate = interestRate / 100 / 365;
-        const interest = amount * dailyRate * periodDays;
-        const fee = (amount * processingFee) / 100;
+        // NALA Interest Structure: 40% total upfront
+        // - 20% interest (NCR regulated cap)
+        // - 20% admin/operational/insurance fees
+        const interestFee = Math.round(amount * 0.20);
+        const adminFee = Math.round(amount * 0.20);
+        const totalFees = interestFee + adminFee;
+        const totalRepayment = amount + totalFees;
 
-        // Total repayment
-        const totalRepayment = amount + interest + fee;
-
-        // Monthly installment (approximate)
-        const months = Math.ceil(periodDays / 30);
-        const monthlyInstallment = totalRepayment / months;
+        // Installment calculations
+        const dailyInstallment = Math.round(totalRepayment / periodDays);
+        const monthlyInstallment = Math.round(totalRepayment / (periodDays / 30));
 
         return {
           principal: amount,
-          interest: Math.round(interest * 100) / 100,
-          processingFee: Math.round(fee * 100) / 100,
-          totalRepayment: Math.round(totalRepayment * 100) / 100,
-          monthlyInstallment: Math.round(monthlyInstallment * 100) / 100,
+          interestFee,
+          adminFee,
+          totalFees,
+          totalRepayment,
+          dailyInstallment,
+          monthlyInstallment,
           periodDays,
-          months,
         };
       }),
 
