@@ -13,23 +13,22 @@ export default function Home() {
 
   // Client-side loan calculation (no API calls needed)
   const calculation = useMemo(() => {
-    const ANNUAL_INTEREST_RATE = 0.40; // 40% annual interest (20% NCR cap + 20% admin fees)
-    const PROCESSING_FEE_PERCENT = 0.05; // 5% processing fee
-    
     const principal = loanAmount;
-    const dailyRate = ANNUAL_INTEREST_RATE / 365;
-    const interest = Math.round(principal * dailyRate * loanPeriod);
-    const processingFee = Math.round(principal * PROCESSING_FEE_PERCENT);
-    const totalRepayment = principal + interest + processingFee;
+    const interestFee = Math.round(principal * 0.20); // 20% interest (NCR cap)
+    const adminFee = Math.round(principal * 0.20); // 20% admin/operational/insurance fees
+    const totalFees = interestFee + adminFee;
+    const totalRepayment = principal + totalFees;
+    const dailyInstallment = Math.round(totalRepayment / loanPeriod);
     const monthlyInstallment = Math.round(totalRepayment / (loanPeriod / 30));
     
     return {
       principal,
-      interest,
-      processingFee,
+      interestFee,
+      adminFee,
+      totalFees,
       totalRepayment,
+      dailyInstallment,
       monthlyInstallment,
-      dailyRate,
       loanPeriod,
     };
   }, [loanAmount, loanPeriod]);
@@ -81,10 +80,10 @@ export default function Home() {
           <div className="grid md:grid-cols-2 gap-12 items-center">
             <div>
               <h1 className="text-4xl md:text-5xl font-bold text-foreground mb-6">
-                Fast, Simple, & Honest Loans
+                Get Cash Fast, No Stress
               </h1>
               <p className="text-lg text-muted-foreground mb-8">
-                Get the funds you need with confidence. NALA offers quick, flexible personal loans with transparent terms and instant decisions.
+                When you need money now, NALA delivers. Simple application, instant approval, money in your account same day. Trusted by thousands of South Africans.
               </p>
               <div className="flex flex-col sm:flex-row gap-4">
                 <Button 
@@ -118,23 +117,23 @@ export default function Home() {
         <div className="container">
           <div className="max-w-2xl mx-auto">
             <div className="text-center mb-12">
-              <h2 className="text-3xl md:text-4xl font-bold mb-4">Loan Calculator</h2>
+              <h2 className="text-3xl md:text-4xl font-bold mb-4">See Your Exact Cost</h2>
               <p className="text-lg text-muted-foreground">
-                See exactly what your loan will cost. Adjust the sliders to explore your options.
+                Adjust the amount and timeframe to see exactly what you'll pay. No surprises, no hidden fees.
               </p>
             </div>
 
             <Card className="border-2 border-primary/20">
               <CardHeader>
-                <CardTitle>Calculate Your Loan</CardTitle>
-                <CardDescription>Adjust the loan amount and period to see your monthly payment</CardDescription>
+                <CardTitle>How Much Do You Need?</CardTitle>
+                <CardDescription>Choose your loan amount and how long you need to repay it</CardDescription>
               </CardHeader>
               <CardContent className="space-y-8">
                 {/* Loan Amount Slider */}
                 <div>
                   <div className="flex justify-between items-center mb-4">
                     <label className="text-sm font-semibold">Loan Amount</label>
-                    <span className="text-2xl font-bold text-primary">R{loanAmount.toLocaleString()}</span>
+                    <span className="text-2xl font-bold text-primary">R {loanAmount.toLocaleString()}</span>
                   </div>
                   <Slider
                     value={[loanAmount]}
@@ -153,7 +152,7 @@ export default function Home() {
                 {/* Loan Period Slider */}
                 <div>
                   <div className="flex justify-between items-center mb-4">
-                    <label className="text-sm font-semibold">Loan Period</label>
+                    <label className="text-sm font-semibold">Repay In</label>
                     <span className="text-2xl font-bold text-primary">{loanPeriod} days</span>
                   </div>
                   <Slider
@@ -174,26 +173,26 @@ export default function Home() {
                 <div className="bg-muted/50 rounded-lg p-6 space-y-4">
                   <div className="grid grid-cols-2 gap-4">
                     <div>
-                      <p className="text-sm text-muted-foreground">Principal</p>
-                      <p className="text-lg font-semibold">R{calculation.principal.toLocaleString()}</p>
+                      <p className="text-sm text-muted-foreground">Loan Amount</p>
+                      <p className="text-lg font-semibold">R {calculation.principal.toLocaleString()}</p>
                     </div>
                     <div>
-                      <p className="text-sm text-muted-foreground">Interest (40%)</p>
-                      <p className="text-lg font-semibold">R{calculation.interest.toLocaleString()}</p>
+                      <p className="text-sm text-muted-foreground">Interest</p>
+                      <p className="text-lg font-semibold">R {calculation.interestFee.toLocaleString()}</p>
                     </div>
                     <div>
-                      <p className="text-sm text-muted-foreground">Processing Fee</p>
-                      <p className="text-lg font-semibold">R{calculation.processingFee.toLocaleString()}</p>
+                      <p className="text-sm text-muted-foreground">Fees</p>
+                      <p className="text-lg font-semibold">R {calculation.adminFee.toLocaleString()}</p>
                     </div>
                     <div>
-                      <p className="text-sm text-muted-foreground">Total Repayment</p>
-                      <p className="text-lg font-semibold text-primary">R{calculation.totalRepayment.toLocaleString()}</p>
+                      <p className="text-sm text-muted-foreground">You Pay Back</p>
+                      <p className="text-lg font-semibold text-primary">R {calculation.totalRepayment.toLocaleString()}</p>
                     </div>
                   </div>
 
                   <div className="border-t border-border pt-4">
-                    <p className="text-sm text-muted-foreground mb-2">Monthly Installment</p>
-                    <p className="text-3xl font-bold text-primary">R{calculation.monthlyInstallment.toLocaleString()}</p>
+                    <p className="text-sm text-muted-foreground mb-2">Per Month</p>
+                    <p className="text-3xl font-bold text-primary">R {calculation.monthlyInstallment.toLocaleString()}</p>
                   </div>
                 </div>
 
@@ -213,9 +212,9 @@ export default function Home() {
       <section id="features" className="py-16 md:py-24 bg-muted/50">
         <div className="container">
           <div className="text-center mb-16">
-            <h2 className="text-3xl md:text-4xl font-bold mb-4">Why Choose NALA?</h2>
+            <h2 className="text-3xl md:text-4xl font-bold mb-4">Why South Africans Trust NALA</h2>
             <p className="text-lg text-muted-foreground">
-              We make borrowing simple, transparent, and accessible to everyone
+              Real loans for real people. No nonsense, just the money you need, when you need it.
             </p>
           </div>
 
@@ -223,33 +222,33 @@ export default function Home() {
             {[
               {
                 icon: Zap,
-                title: "Quick & Flexible",
-                description: "Get approved in minutes and receive funds instantly. Loans available for all purposes."
+                title: "Money Same Day",
+                description: "Apply in the morning, have cash in your account by afternoon. No waiting around."
               },
               {
                 icon: DollarSign,
-                title: "Transparent Pricing",
-                description: "No hidden fees. See exactly what you'll pay before you apply. 40% interest rate on all loans."
+                title: "What You See Is What You Pay",
+                description: "No hidden charges. We show you the exact amount upfront. No surprises when you repay."
               },
               {
                 icon: CheckCircle,
-                title: "Easy Application",
-                description: "Simple online process. Just provide your ID, income details, and bank account information."
+                title: "5 Minutes to Apply",
+                description: "Simple online form. Your ID, income, and bank details. That's it. No paperwork, no hassle."
               },
               {
                 icon: Users,
-                title: "Trusted by Thousands",
-                description: "Join thousands of South Africans who trust NALA for their financial needs."
+                title: "Trusted Since Day One",
+                description: "Thousands of working South Africans have used NALA. We're here to help, not to judge."
               },
               {
                 icon: TrendingUp,
-                title: "Flexible Repayment",
-                description: "Choose your repayment period from 7 to 180 days. Pay early without penalties."
+                title: "Repay When It Suits You",
+                description: "7 days to 6 months. Choose what works for your budget. Pay early with no penalties."
               },
               {
                 icon: CheckCircle,
-                title: "24/7 Support",
-                description: "Our customer support team is always ready to help with your questions and concerns."
+                title: "Always There for You",
+                description: "Questions at 2am? We're here. Real support from real people who understand your situation."
               }
             ].map((feature, i) => (
               <Card key={i} className="border-border">
@@ -267,9 +266,9 @@ export default function Home() {
       {/* CTA Section */}
       <section className="py-16 md:py-24 bg-primary text-primary-foreground">
         <div className="container text-center">
-          <h2 className="text-3xl md:text-4xl font-bold mb-6">Ready to Get Your Loan?</h2>
+          <h2 className="text-3xl md:text-4xl font-bold mb-6">Stop Worrying About Money</h2>
           <p className="text-lg mb-8 opacity-90">
-            Apply now and get approved in minutes. Our simple process makes it easy to get the funds you need.
+            Get the cash you need today. Fast approval, transparent pricing, real support. Apply now.
           </p>
           <Button 
             size="lg" 
