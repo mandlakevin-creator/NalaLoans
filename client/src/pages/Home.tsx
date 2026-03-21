@@ -54,11 +54,14 @@ export default function Home() {
             <a href="#calculator" className="text-sm font-medium hover:text-primary transition-colors">
               Calculator
             </a>
-            <a href="#features" className="text-sm font-medium hover:text-primary transition-colors">
-              Features
+            <a href="/about" className="text-sm font-medium hover:text-primary transition-colors">
+              About
             </a>
-            <a href="#faq" className="text-sm font-medium hover:text-primary transition-colors">
+            <a href="/faq" className="text-sm font-medium hover:text-primary transition-colors">
               FAQ
+            </a>
+            <a href="/blog" className="text-sm font-medium hover:text-primary transition-colors">
+              Blog
             </a>
           </div>
 

@@ -5,37 +5,25 @@ import { Route, Switch } from "wouter";
 import ErrorBoundary from "./components/ErrorBoundary";
 import { ThemeProvider } from "./contexts/ThemeContext";
 import Home from "./pages/Home";
+import About from "./pages/About";
+import FAQ from "./pages/FAQ";
+import Blog from "./pages/Blog";
+import Contact from "./pages/Contact";
 import Dashboard from "./pages/Dashboard";
-import EligibilityChecker from "./pages/EligibilityChecker";
 import LoanApplication from "./pages/LoanApplication";
-import { useAuth } from "@/_core/hooks/useAuth";
-import { Loader2 } from "lucide-react";
-
-function ProtectedRoute({ component: Component }: { component: React.ComponentType }) {
-  const { isAuthenticated, loading } = useAuth();
-
-  if (loading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center">
-        <Loader2 className="w-8 h-8 animate-spin text-primary" />
-      </div>
-    );
-  }
-
-  if (!isAuthenticated) {
-    return <NotFound />;
-  }
-
-  return <Component />;
-}
+import EligibilityChecker from "./pages/EligibilityChecker";
 
 function Router() {
   return (
     <Switch>
       <Route path={"/"} component={Home} />
+      <Route path={"/about"} component={About} />
+      <Route path={"/faq"} component={FAQ} />
+      <Route path={"/blog"} component={Blog} />
+      <Route path={"/contact"} component={Contact} />
+      <Route path={"/dashboard"} component={Dashboard} />
+      <Route path={"/apply"} component={LoanApplication} />
       <Route path={"/eligibility"} component={EligibilityChecker} />
-      <Route path={"/apply"} component={() => <ProtectedRoute component={LoanApplication} />} />
-      <Route path={"/dashboard"} component={() => <ProtectedRoute component={Dashboard} />} />
       <Route path={"/404"} component={NotFound} />
       {/* Final fallback route */}
       <Route component={NotFound} />
@@ -46,7 +34,9 @@ function Router() {
 function App() {
   return (
     <ErrorBoundary>
-      <ThemeProvider defaultTheme="light">
+      <ThemeProvider
+        defaultTheme="light"
+      >
         <TooltipProvider>
           <Toaster />
           <Router />
