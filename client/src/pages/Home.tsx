@@ -5,11 +5,16 @@ import { ArrowRight, CheckCircle, DollarSign, TrendingUp, Users, Zap } from "luc
 import { getLoginUrl } from "@/const";
 import { useState, useMemo } from "react";
 import { useAuth } from "@/_core/hooks/useAuth";
+import { EligibilityQuiz } from "@/components/EligibilityQuiz";
+import { PaymentSchedule } from "@/components/PaymentSchedule";
+import { IncomeVerificationGuide } from "@/components/IncomeVerificationGuide";
 
 export default function Home() {
   const { user, isAuthenticated, logout } = useAuth();
   const [loanAmount, setLoanAmount] = useState(5000);
   const [loanPeriod, setLoanPeriod] = useState(30);
+  const [showPaymentSchedule, setShowPaymentSchedule] = useState(false);
+  const [activeTab, setActiveTab] = useState<"calculator" | "eligibility" | "requirements">("calculator");
 
   // Client-side loan calculation (no API calls needed)
   const calculation = useMemo(() => {
@@ -112,98 +117,163 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Loan Calculator Section */}
+      {/* Smart Tools Section */}
       <section id="calculator" className="py-16 md:py-24">
         <div className="container">
-          <div className="max-w-2xl mx-auto">
+          <div className="max-w-4xl mx-auto">
             <div className="text-center mb-12">
-              <h2 className="text-3xl md:text-4xl font-bold mb-4">See Your Exact Cost</h2>
+              <h2 className="text-3xl md:text-4xl font-bold mb-4">Smart Loan Tools</h2>
               <p className="text-lg text-muted-foreground">
-                Adjust the amount and timeframe to see exactly what you'll pay. No surprises, no hidden fees.
+                Check your eligibility, see your exact costs, and understand what you need to apply.
               </p>
             </div>
 
-            <Card className="border-2 border-primary/20">
-              <CardHeader>
-                <CardTitle>How Much Do You Need?</CardTitle>
-                <CardDescription>Choose your loan amount and how long you need to repay it</CardDescription>
-              </CardHeader>
-              <CardContent className="space-y-8">
-                {/* Loan Amount Slider */}
-                <div>
-                  <div className="flex justify-between items-center mb-4">
-                    <label className="text-sm font-semibold">Loan Amount</label>
-                    <span className="text-2xl font-bold text-primary">R {loanAmount.toLocaleString()}</span>
-                  </div>
-                  <Slider
-                    value={[loanAmount]}
-                    onValueChange={(value) => setLoanAmount(value[0])}
-                    min={1000}
-                    max={50000}
-                    step={500}
-                    className="w-full"
-                  />
-                  <div className="flex justify-between text-xs text-muted-foreground mt-2">
-                    <span>R1,000</span>
-                    <span>R50,000</span>
-                  </div>
-                </div>
+            {/* Tab Navigation */}
+            <div className="flex gap-2 mb-8 border-b border-border">
+              <button
+                onClick={() => setActiveTab("calculator")}
+                className={`px-4 py-3 font-medium border-b-2 transition-colors ${
+                  activeTab === "calculator"
+                    ? "border-primary text-primary"
+                    : "border-transparent text-muted-foreground hover:text-foreground"
+                }`}
+              >
+                💰 Calculator
+              </button>
+              <button
+                onClick={() => setActiveTab("eligibility")}
+                className={`px-4 py-3 font-medium border-b-2 transition-colors ${
+                  activeTab === "eligibility"
+                    ? "border-primary text-primary"
+                    : "border-transparent text-muted-foreground hover:text-foreground"
+                }`}
+              >
+                ✅ Check Eligibility
+              </button>
+              <button
+                onClick={() => setActiveTab("requirements")}
+                className={`px-4 py-3 font-medium border-b-2 transition-colors ${
+                  activeTab === "requirements"
+                    ? "border-primary text-primary"
+                    : "border-transparent text-muted-foreground hover:text-foreground"
+                }`}
+              >
+                📋 What You Need
+              </button>
+            </div>
 
-                {/* Loan Period Slider */}
-                <div>
-                  <div className="flex justify-between items-center mb-4">
-                    <label className="text-sm font-semibold">Repay In</label>
-                    <span className="text-2xl font-bold text-primary">{loanPeriod} days</span>
-                  </div>
-                  <Slider
-                    value={[loanPeriod]}
-                    onValueChange={(value) => setLoanPeriod(value[0])}
-                    min={7}
-                    max={180}
-                    step={1}
-                    className="w-full"
-                  />
-                  <div className="flex justify-between text-xs text-muted-foreground mt-2">
-                    <span>7 days</span>
-                    <span>180 days</span>
-                  </div>
-                </div>
-
-                {/* Calculation Results */}
-                <div className="bg-muted/50 rounded-lg p-6 space-y-4">
-                  <div className="grid grid-cols-2 gap-4">
-                    <div>
-                      <p className="text-sm text-muted-foreground">Loan Amount</p>
-                      <p className="text-lg font-semibold">R {calculation.principal.toLocaleString()}</p>
+            {/* Calculator Tab */}
+            {activeTab === "calculator" && (
+              <Card className="border-2 border-primary/20">
+                <CardHeader>
+                  <CardTitle>How Much Do You Need?</CardTitle>
+                  <CardDescription>Choose your loan amount and how long you need to repay it</CardDescription>
+                </CardHeader>
+                <CardContent className="space-y-8">
+                  {/* Loan Amount Slider */}
+                  <div>
+                    <div className="flex justify-between items-center mb-4">
+                      <label className="text-sm font-semibold">Loan Amount</label>
+                      <span className="text-2xl font-bold text-primary">R {loanAmount.toLocaleString()}</span>
                     </div>
-                    <div>
-                      <p className="text-sm text-muted-foreground">Interest</p>
-                      <p className="text-lg font-semibold">R {calculation.interestFee.toLocaleString()}</p>
-                    </div>
-                    <div>
-                      <p className="text-sm text-muted-foreground">Fees</p>
-                      <p className="text-lg font-semibold">R {calculation.adminFee.toLocaleString()}</p>
-                    </div>
-                    <div>
-                      <p className="text-sm text-muted-foreground">You Pay Back</p>
-                      <p className="text-lg font-semibold text-primary">R {calculation.totalRepayment.toLocaleString()}</p>
+                    <Slider
+                      value={[loanAmount]}
+                      onValueChange={(value) => setLoanAmount(value[0])}
+                      min={1000}
+                      max={50000}
+                      step={500}
+                      className="w-full"
+                    />
+                    <div className="flex justify-between text-xs text-muted-foreground mt-2">
+                      <span>R1,000</span>
+                      <span>R50,000</span>
                     </div>
                   </div>
 
-                  <div className="border-t border-border pt-4">
-                    <p className="text-sm text-muted-foreground mb-2">Per Month</p>
-                    <p className="text-3xl font-bold text-primary">R {calculation.monthlyInstallment.toLocaleString()}</p>
+                  {/* Loan Period Slider */}
+                  <div>
+                    <div className="flex justify-between items-center mb-4">
+                      <label className="text-sm font-semibold">Repay In</label>
+                      <span className="text-2xl font-bold text-primary">{loanPeriod} days</span>
+                    </div>
+                    <Slider
+                      value={[loanPeriod]}
+                      onValueChange={(value) => setLoanPeriod(value[0])}
+                      min={7}
+                      max={180}
+                      step={1}
+                      className="w-full"
+                    />
+                    <div className="flex justify-between text-xs text-muted-foreground mt-2">
+                      <span>7 days</span>
+                      <span>180 days</span>
+                    </div>
                   </div>
-                </div>
 
-                <Button 
-                  className="w-full bg-primary hover:bg-primary/90 h-12 text-base"
-                  onClick={() => (window.location.href = getLoginUrl())}
-                >
-                  Apply for This Loan <ArrowRight className="ml-2 w-4 h-4" />
-                </Button>
-              </CardContent>
-            </Card>
+                  {/* Calculation Results */}
+                  <div className="bg-muted/50 rounded-lg p-6 space-y-4">
+                    <div className="grid grid-cols-2 gap-4">
+                      <div>
+                        <p className="text-sm text-muted-foreground">Loan Amount</p>
+                        <p className="text-lg font-semibold">R {calculation.principal.toLocaleString()}</p>
+                      </div>
+                      <div>
+                        <p className="text-sm text-muted-foreground">Interest</p>
+                        <p className="text-lg font-semibold">R {calculation.interestFee.toLocaleString()}</p>
+                      </div>
+                      <div>
+                        <p className="text-sm text-muted-foreground">Fees</p>
+                        <p className="text-lg font-semibold">R {calculation.adminFee.toLocaleString()}</p>
+                      </div>
+                      <div>
+                        <p className="text-sm text-muted-foreground">You Pay Back</p>
+                        <p className="text-lg font-semibold text-primary">R {calculation.totalRepayment.toLocaleString()}</p>
+                      </div>
+                    </div>
+
+                    <div className="border-t border-border pt-4">
+                      <p className="text-sm text-muted-foreground mb-2">Per Month</p>
+                      <p className="text-3xl font-bold text-primary">R {calculation.monthlyInstallment.toLocaleString()}</p>
+                    </div>
+                  </div>
+
+                  <div className="space-y-3">
+                    <Button 
+                      className="w-full bg-primary hover:bg-primary/90 h-12 text-base"
+                      onClick={() => setShowPaymentSchedule(!showPaymentSchedule)}
+                    >
+                      {showPaymentSchedule ? "Hide Payment Schedule" : "See Payment Schedule"}
+                    </Button>
+                    <Button 
+                      className="w-full bg-primary hover:bg-primary/90 h-12 text-base"
+                      onClick={() => (window.location.href = getLoginUrl())}
+                    >
+                      Apply for This Loan <ArrowRight className="ml-2 w-4 h-4" />
+                    </Button>
+                  </div>
+
+                  {showPaymentSchedule && (
+                    <div className="mt-6">
+                      <PaymentSchedule 
+                        loanAmount={loanAmount}
+                        loanPeriodDays={loanPeriod}
+                        totalRepayment={calculation.totalRepayment}
+                      />
+                    </div>
+                  )}
+                </CardContent>
+              </Card>
+            )}
+
+            {/* Eligibility Tab */}
+            {activeTab === "eligibility" && (
+              <EligibilityQuiz />
+            )}
+
+            {/* Requirements Tab */}
+            {activeTab === "requirements" && (
+              <IncomeVerificationGuide />
+            )}
           </div>
         </div>
       </section>
