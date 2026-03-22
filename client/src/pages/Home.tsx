@@ -1,29 +1,26 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Slider } from "@/components/ui/slider";
-import { ArrowRight, CheckCircle, DollarSign, TrendingUp, Users, Zap } from "lucide-react";
+import { 
+  ArrowRight, CheckCircle, Clock, Shield, Zap, Users, TrendingUp, 
+  DollarSign, FileCheck, Smartphone, HeartHandshake, Star
+} from "lucide-react";
 import { getLoginUrl } from "@/const";
 import { useState, useMemo } from "react";
 import { useAuth } from "@/_core/hooks/useAuth";
-import { EligibilityQuiz } from "@/components/EligibilityQuiz";
-import { PaymentSchedule } from "@/components/PaymentSchedule";
-import { IncomeVerificationGuide } from "@/components/IncomeVerificationGuide";
 
 export default function Home() {
   const { user, isAuthenticated, logout } = useAuth();
   const [loanAmount, setLoanAmount] = useState(5000);
   const [loanPeriod, setLoanPeriod] = useState(30);
-  const [showPaymentSchedule, setShowPaymentSchedule] = useState(false);
-  const [activeTab, setActiveTab] = useState<"calculator" | "eligibility" | "requirements">("calculator");
 
-  // Client-side loan calculation (no API calls needed)
+  // Client-side loan calculation
   const calculation = useMemo(() => {
     const principal = loanAmount;
-    const interestFee = Math.round(principal * 0.20); // 20% interest (NCR cap)
-    const adminFee = Math.round(principal * 0.20); // 20% admin/operational/insurance fees
+    const interestFee = Math.round(principal * 0.20);
+    const adminFee = Math.round(principal * 0.20);
     const totalFees = interestFee + adminFee;
     const totalRepayment = principal + totalFees;
-    const dailyInstallment = Math.round(totalRepayment / loanPeriod);
     const monthlyInstallment = Math.round(totalRepayment / (loanPeriod / 30));
     
     return {
@@ -32,7 +29,6 @@ export default function Home() {
       adminFee,
       totalFees,
       totalRepayment,
-      dailyInstallment,
       monthlyInstallment,
       loanPeriod,
     };
@@ -40,28 +36,28 @@ export default function Home() {
 
   return (
     <div className="min-h-screen bg-background">
-      {/* Navigation */}
-      <nav className="border-b border-border sticky top-0 z-50 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+      {/* Premium Navigation */}
+      <nav className="border-b border-border/40 sticky top-0 z-50 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
         <div className="container flex items-center justify-between h-16">
-          <div className="flex items-center gap-2">
-            <div className="w-8 h-8 rounded-full bg-primary flex items-center justify-center">
-              <span className="text-primary-foreground font-bold text-sm">N</span>
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 rounded-full bg-gradient-to-br from-primary to-primary/80 flex items-center justify-center shadow-lg">
+              <span className="text-primary-foreground font-bold text-lg">N</span>
             </div>
-            <span className="font-bold text-lg text-foreground">NALA</span>
+            <span className="font-bold text-xl text-foreground">NALA</span>
           </div>
 
           <div className="hidden md:flex items-center gap-8">
-            <a href="#calculator" className="text-sm font-medium hover:text-primary transition-colors">
+            <a href="#calculator" className="text-sm font-medium text-muted-foreground hover:text-primary transition-colors">
               Calculator
             </a>
-            <a href="/about" className="text-sm font-medium hover:text-primary transition-colors">
-              About
+            <a href="#how-it-works" className="text-sm font-medium text-muted-foreground hover:text-primary transition-colors">
+              How It Works
             </a>
-            <a href="/faq" className="text-sm font-medium hover:text-primary transition-colors">
+            <a href="/faq" className="text-sm font-medium text-muted-foreground hover:text-primary transition-colors">
               FAQ
             </a>
-            <a href="/blog" className="text-sm font-medium hover:text-primary transition-colors">
-              Blog
+            <a href="/about" className="text-sm font-medium text-muted-foreground hover:text-primary transition-colors">
+              About
             </a>
           </div>
 
@@ -74,7 +70,7 @@ export default function Home() {
                 </Button>
               </>
             ) : (
-              <Button size="sm" onClick={() => (window.location.href = getLoginUrl())}>
+              <Button size="sm" className="bg-primary hover:bg-primary/90" onClick={() => (window.location.href = getLoginUrl())}>
                 Login
               </Button>
             )}
@@ -82,253 +78,254 @@ export default function Home() {
         </div>
       </nav>
 
-      {/* Hero Section */}
-      <section className="py-16 md:py-24 bg-gradient-to-b from-primary/5 to-background">
-        <div className="container">
+      {/* Premium Hero Section */}
+      <section className="py-20 md:py-32 bg-gradient-to-b from-primary/8 via-background to-background relative overflow-hidden">
+        <div className="absolute inset-0 overflow-hidden pointer-events-none">
+          <div className="absolute top-20 right-10 w-72 h-72 bg-primary/5 rounded-full blur-3xl"></div>
+          <div className="absolute bottom-0 left-10 w-96 h-96 bg-primary/3 rounded-full blur-3xl"></div>
+        </div>
+        
+        <div className="container relative z-10">
           <div className="grid md:grid-cols-2 gap-12 items-center">
             <div>
-              <h1 className="text-4xl md:text-5xl font-bold text-foreground mb-6">
-                Get Cash Fast, No Stress
+              <div className="inline-block mb-6 px-4 py-2 bg-primary/10 rounded-full border border-primary/20">
+                <span className="text-sm font-medium text-primary">✨ Trusted by 50,000+ South Africans</span>
+              </div>
+              
+              <h1 className="text-5xl md:text-6xl font-bold text-foreground mb-6 leading-tight">
+                Get Cash Fast, <span className="text-primary">No Stress</span>
               </h1>
-              <p className="text-lg text-muted-foreground mb-8">
-                When you need money now, NALA delivers. Simple application, instant approval, money in your account same day. Trusted by thousands of South Africans.
+              
+              <p className="text-xl text-muted-foreground mb-8 leading-relaxed">
+                Simple application. Instant approval. Money in your account same day. NALA makes borrowing easy, transparent, and stress-free.
               </p>
+              
               <div className="flex flex-col sm:flex-row gap-4">
                 <Button 
                   size="lg" 
-                  className="bg-primary hover:bg-primary/90"
+                  className="bg-primary hover:bg-primary/90 text-white shadow-lg hover:shadow-xl transition-all"
                   onClick={() => (window.location.href = getLoginUrl())}
                 >
-                  Apply Now <ArrowRight className="ml-2 w-4 h-4" />
+                  Apply Now <ArrowRight className="ml-2 w-5 h-5" />
                 </Button>
                 <Button 
                   size="lg" 
                   variant="outline"
-                  onClick={() => (window.location.href = "#features")}
+                  className="border-2"
+                  onClick={() => document.getElementById('calculator')?.scrollIntoView({ behavior: 'smooth' })}
                 >
-                  Learn More
+                  See Calculator
                 </Button>
+              </div>
+
+              <div className="mt-12 grid grid-cols-3 gap-6">
+                <div>
+                  <div className="text-3xl font-bold text-primary">5 min</div>
+                  <p className="text-sm text-muted-foreground">Quick Apply</p>
+                </div>
+                <div>
+                  <div className="text-3xl font-bold text-primary">24/7</div>
+                  <p className="text-sm text-muted-foreground">Support</p>
+                </div>
+                <div>
+                  <div className="text-3xl font-bold text-primary">100%</div>
+                  <p className="text-sm text-muted-foreground">Transparent</p>
+                </div>
               </div>
             </div>
 
             <div className="hidden md:block">
-              <div className="bg-gradient-to-br from-primary/10 to-primary/5 rounded-2xl p-12 aspect-square flex items-center justify-center">
-                <DollarSign className="w-32 h-32 text-primary/30" />
+              <div className="bg-gradient-to-br from-primary/15 to-primary/5 rounded-3xl p-12 aspect-square flex items-center justify-center shadow-2xl">
+                <div className="relative">
+                  <div className="absolute inset-0 bg-primary/20 rounded-full blur-2xl"></div>
+                  <DollarSign className="w-48 h-48 text-primary/40 relative z-10" />
+                </div>
               </div>
             </div>
           </div>
         </div>
       </section>
 
-      {/* Smart Tools Section */}
-      <section id="calculator" className="py-16 md:py-24">
+      {/* Premium Calculator Section */}
+      <section id="calculator" className="py-20 md:py-28 bg-background">
         <div className="container">
-          <div className="max-w-4xl mx-auto">
-            <div className="text-center mb-12">
-              <h2 className="text-3xl md:text-4xl font-bold mb-4">Smart Loan Tools</h2>
-              <p className="text-lg text-muted-foreground">
-                Check your eligibility, see your exact costs, and understand what you need to apply.
+          <div className="max-w-5xl mx-auto">
+            <div className="text-center mb-16">
+              <h2 className="text-4xl md:text-5xl font-bold mb-4 text-foreground">
+                See Your Exact Cost
+              </h2>
+              <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
+                Adjust the sliders to explore your options. No hidden fees, no surprises. What you see is what you pay.
               </p>
             </div>
 
-            {/* Tab Navigation */}
-            <div className="flex gap-2 mb-8 border-b border-border">
-              <button
-                onClick={() => setActiveTab("calculator")}
-                className={`px-4 py-3 font-medium border-b-2 transition-colors ${
-                  activeTab === "calculator"
-                    ? "border-primary text-primary"
-                    : "border-transparent text-muted-foreground hover:text-foreground"
-                }`}
-              >
-                💰 Calculator
-              </button>
-              <button
-                onClick={() => setActiveTab("eligibility")}
-                className={`px-4 py-3 font-medium border-b-2 transition-colors ${
-                  activeTab === "eligibility"
-                    ? "border-primary text-primary"
-                    : "border-transparent text-muted-foreground hover:text-foreground"
-                }`}
-              >
-                ✅ Check Eligibility
-              </button>
-              <button
-                onClick={() => setActiveTab("requirements")}
-                className={`px-4 py-3 font-medium border-b-2 transition-colors ${
-                  activeTab === "requirements"
-                    ? "border-primary text-primary"
-                    : "border-transparent text-muted-foreground hover:text-foreground"
-                }`}
-              >
-                📋 What You Need
-              </button>
-            </div>
-
-            {/* Calculator Tab */}
-            {activeTab === "calculator" && (
-              <Card className="border-2 border-primary/20">
-                <CardHeader>
-                  <CardTitle>How Much Do You Need?</CardTitle>
-                  <CardDescription>Choose your loan amount and how long you need to repay it</CardDescription>
-                </CardHeader>
-                <CardContent className="space-y-8">
-                  {/* Loan Amount Slider */}
-                  <div>
-                    <div className="flex justify-between items-center mb-4">
-                      <label className="text-sm font-semibold">Loan Amount</label>
-                      <span className="text-2xl font-bold text-primary">R {loanAmount.toLocaleString()}</span>
-                    </div>
-                    <Slider
-                      value={[loanAmount]}
-                      onValueChange={(value) => setLoanAmount(value[0])}
-                      min={1000}
-                      max={50000}
-                      step={500}
-                      className="w-full"
-                    />
-                    <div className="flex justify-between text-xs text-muted-foreground mt-2">
-                      <span>R1,000</span>
-                      <span>R50,000</span>
-                    </div>
-                  </div>
-
-                  {/* Loan Period Slider */}
-                  <div>
-                    <div className="flex justify-between items-center mb-4">
-                      <label className="text-sm font-semibold">Repay In</label>
-                      <span className="text-2xl font-bold text-primary">{loanPeriod} days</span>
-                    </div>
-                    <Slider
-                      value={[loanPeriod]}
-                      onValueChange={(value) => setLoanPeriod(value[0])}
-                      min={7}
-                      max={180}
-                      step={1}
-                      className="w-full"
-                    />
-                    <div className="flex justify-between text-xs text-muted-foreground mt-2">
-                      <span>7 days</span>
-                      <span>180 days</span>
-                    </div>
-                  </div>
-
-                  {/* Calculation Results */}
-                  <div className="bg-muted/50 rounded-lg p-6 space-y-4">
-                    <div className="grid grid-cols-2 gap-4">
-                      <div>
-                        <p className="text-sm text-muted-foreground">Loan Amount</p>
-                        <p className="text-lg font-semibold">R {calculation.principal.toLocaleString()}</p>
+            <div className="grid md:grid-cols-3 gap-8">
+              {/* Calculator Card */}
+              <div className="md:col-span-2">
+                <Card className="border-2 shadow-xl">
+                  <CardHeader className="pb-6">
+                    <CardTitle className="text-2xl">Loan Calculator</CardTitle>
+                    <CardDescription>Adjust to see your personalized quote</CardDescription>
+                  </CardHeader>
+                  <CardContent className="space-y-8">
+                    {/* Loan Amount Slider */}
+                    <div>
+                      <div className="flex justify-between items-center mb-4">
+                        <label className="text-sm font-semibold text-foreground">How Much Do You Need?</label>
+                        <div className="text-2xl font-bold text-primary">R {loanAmount.toLocaleString()}</div>
                       </div>
-                      <div>
-                        <p className="text-sm text-muted-foreground">Interest</p>
-                        <p className="text-lg font-semibold">R {calculation.interestFee.toLocaleString()}</p>
-                      </div>
-                      <div>
-                        <p className="text-sm text-muted-foreground">Fees</p>
-                        <p className="text-lg font-semibold">R {calculation.adminFee.toLocaleString()}</p>
-                      </div>
-                      <div>
-                        <p className="text-sm text-muted-foreground">You Pay Back</p>
-                        <p className="text-lg font-semibold text-primary">R {calculation.totalRepayment.toLocaleString()}</p>
+                      <Slider
+                        value={[loanAmount]}
+                        onValueChange={(val) => setLoanAmount(val[0])}
+                        min={1000}
+                        max={50000}
+                        step={500}
+                        className="w-full"
+                      />
+                      <div className="flex justify-between text-xs text-muted-foreground mt-2">
+                        <span>R1,000</span>
+                        <span>R50,000</span>
                       </div>
                     </div>
 
-                    <div className="border-t border-border pt-4">
-                      <p className="text-sm text-muted-foreground mb-2">Per Month</p>
-                      <p className="text-3xl font-bold text-primary">R {calculation.monthlyInstallment.toLocaleString()}</p>
+                    {/* Loan Period Slider */}
+                    <div>
+                      <div className="flex justify-between items-center mb-4">
+                        <label className="text-sm font-semibold text-foreground">Repay In</label>
+                        <div className="text-2xl font-bold text-primary">{loanPeriod} days</div>
+                      </div>
+                      <Slider
+                        value={[loanPeriod]}
+                        onValueChange={(val) => setLoanPeriod(val[0])}
+                        min={7}
+                        max={180}
+                        step={1}
+                        className="w-full"
+                      />
+                      <div className="flex justify-between text-xs text-muted-foreground mt-2">
+                        <span>7 days</span>
+                        <span>180 days</span>
+                      </div>
                     </div>
-                  </div>
+                  </CardContent>
+                </Card>
+              </div>
 
-                  <div className="space-y-3">
+              {/* Summary Card */}
+              <div>
+                <Card className="border-2 bg-gradient-to-br from-primary/5 to-background shadow-xl sticky top-24">
+                  <CardHeader>
+                    <CardTitle className="text-lg">Your Quote</CardTitle>
+                  </CardHeader>
+                  <CardContent className="space-y-4">
+                    <div className="space-y-3">
+                      <div className="flex justify-between">
+                        <span className="text-muted-foreground">Loan Amount</span>
+                        <span className="font-semibold">R {calculation.principal.toLocaleString()}</span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span className="text-muted-foreground">Interest (20%)</span>
+                        <span className="font-semibold">R {calculation.interestFee.toLocaleString()}</span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span className="text-muted-foreground">Fees (20%)</span>
+                        <span className="font-semibold">R {calculation.adminFee.toLocaleString()}</span>
+                      </div>
+                      <div className="border-t border-border pt-3">
+                        <div className="flex justify-between">
+                          <span className="font-semibold">You Pay Back</span>
+                          <span className="text-2xl font-bold text-primary">R {calculation.totalRepayment.toLocaleString()}</span>
+                        </div>
+                      </div>
+                      <div className="bg-background rounded-lg p-3 border border-border">
+                        <div className="text-xs text-muted-foreground mb-1">Per Month</div>
+                        <div className="text-xl font-bold text-foreground">R {calculation.monthlyInstallment.toLocaleString()}</div>
+                      </div>
+                    </div>
+
                     <Button 
-                      className="w-full bg-primary hover:bg-primary/90 h-12 text-base"
-                      onClick={() => setShowPaymentSchedule(!showPaymentSchedule)}
-                    >
-                      {showPaymentSchedule ? "Hide Payment Schedule" : "See Payment Schedule"}
-                    </Button>
-                    <Button 
-                      className="w-full bg-primary hover:bg-primary/90 h-12 text-base"
+                      size="lg" 
+                      className="w-full bg-primary hover:bg-primary/90 mt-6"
                       onClick={() => (window.location.href = getLoginUrl())}
                     >
-                      Apply for This Loan <ArrowRight className="ml-2 w-4 h-4" />
+                      Apply for This Loan
                     </Button>
-                  </div>
+                  </CardContent>
+                </Card>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
 
-                  {showPaymentSchedule && (
-                    <div className="mt-6">
-                      <PaymentSchedule 
-                        loanAmount={loanAmount}
-                        loanPeriodDays={loanPeriod}
-                        totalRepayment={calculation.totalRepayment}
-                      />
+      {/* How It Works Section */}
+      <section id="how-it-works" className="py-20 md:py-28 bg-gradient-to-b from-background via-primary/3 to-background">
+        <div className="container">
+          <div className="text-center mb-16">
+            <h2 className="text-4xl md:text-5xl font-bold mb-4 text-foreground">How It Works</h2>
+            <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
+              Four simple steps to get the cash you need
+            </p>
+          </div>
+
+          <div className="grid md:grid-cols-4 gap-6">
+            {[
+              { icon: FileCheck, title: "Apply", desc: "Fill out a simple form with your details" },
+              { icon: Zap, title: "Instant Decision", desc: "Get approved in minutes, not days" },
+              { icon: DollarSign, title: "Get Funded", desc: "Money lands in your account same day" },
+              { icon: HeartHandshake, title: "Repay Easy", desc: "Flexible repayment options that suit you" }
+            ].map((step, idx) => (
+              <div key={idx} className="relative">
+                <Card className="border-2 h-full hover:shadow-lg transition-all">
+                  <CardContent className="pt-8 text-center">
+                    <div className="mb-4 flex justify-center">
+                      <div className="w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center">
+                        <step.icon className="w-8 h-8 text-primary" />
+                      </div>
                     </div>
-                  )}
-                </CardContent>
-              </Card>
-            )}
-
-            {/* Eligibility Tab */}
-            {activeTab === "eligibility" && (
-              <EligibilityQuiz />
-            )}
-
-            {/* Requirements Tab */}
-            {activeTab === "requirements" && (
-              <IncomeVerificationGuide />
-            )}
+                    <h3 className="font-bold text-lg mb-2">{step.title}</h3>
+                    <p className="text-sm text-muted-foreground">{step.desc}</p>
+                  </CardContent>
+                </Card>
+                {idx < 3 && (
+                  <div className="hidden md:block absolute top-1/2 -right-3 w-6 h-6 text-primary/30">
+                    <ArrowRight className="w-full h-full" />
+                  </div>
+                )}
+              </div>
+            ))}
           </div>
         </div>
       </section>
 
       {/* Features Section */}
-      <section id="features" className="py-16 md:py-24 bg-muted/50">
+      <section className="py-20 md:py-28 bg-background">
         <div className="container">
           <div className="text-center mb-16">
-            <h2 className="text-3xl md:text-4xl font-bold mb-4">Why South Africans Trust NALA</h2>
-            <p className="text-lg text-muted-foreground">
-              Real loans for real people. No nonsense, just the money you need, when you need it.
+            <h2 className="text-4xl md:text-5xl font-bold mb-4 text-foreground">Why Choose NALA?</h2>
+            <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
+              We're built for South Africans. Real loans for real people.
             </p>
           </div>
 
           <div className="grid md:grid-cols-3 gap-8">
             {[
-              {
-                icon: Zap,
-                title: "Money Same Day",
-                description: "Apply in the morning, have cash in your account by afternoon. No waiting around."
-              },
-              {
-                icon: DollarSign,
-                title: "What You See Is What You Pay",
-                description: "No hidden charges. We show you the exact amount upfront. No surprises when you repay."
-              },
-              {
-                icon: CheckCircle,
-                title: "5 Minutes to Apply",
-                description: "Simple online form. Your ID, income, and bank details. That's it. No paperwork, no hassle."
-              },
-              {
-                icon: Users,
-                title: "Trusted Since Day One",
-                description: "Thousands of working South Africans have used NALA. We're here to help, not to judge."
-              },
-              {
-                icon: TrendingUp,
-                title: "Repay When It Suits You",
-                description: "7 days to 6 months. Choose what works for your budget. Pay early with no penalties."
-              },
-              {
-                icon: CheckCircle,
-                title: "Always There for You",
-                description: "Questions at 2am? We're here. Real support from real people who understand your situation."
-              }
-            ].map((feature, i) => (
-              <Card key={i} className="border-border">
-                <CardContent className="pt-6">
-                  <feature.icon className="w-12 h-12 text-primary mb-4" />
-                  <h3 className="text-xl font-semibold mb-2">{feature.title}</h3>
-                  <p className="text-muted-foreground">{feature.description}</p>
+              { icon: Clock, title: "Money Same Day", desc: "Apply in the morning, have cash by afternoon" },
+              { icon: Shield, title: "100% Transparent", desc: "No hidden fees. See exactly what you'll pay" },
+              { icon: Smartphone, title: "Mobile First", desc: "Apply anytime, anywhere from your phone" },
+              { icon: Users, title: "Real Support", desc: "24/7 customer support that actually helps" },
+              { icon: TrendingUp, title: "Flexible Terms", desc: "Choose repayment from 7 to 180 days" },
+              { icon: CheckCircle, title: "Instant Approval", desc: "Know your decision in minutes, not days" }
+            ].map((feature, idx) => (
+              <Card key={idx} className="border-2 hover:shadow-lg transition-all">
+                <CardContent className="pt-8">
+                  <div className="mb-4">
+                    <div className="w-12 h-12 rounded-lg bg-primary/10 flex items-center justify-center">
+                      <feature.icon className="w-6 h-6 text-primary" />
+                    </div>
+                  </div>
+                  <h3 className="font-bold text-lg mb-2">{feature.title}</h3>
+                  <p className="text-sm text-muted-foreground">{feature.desc}</p>
                 </CardContent>
               </Card>
             ))}
@@ -336,58 +333,97 @@ export default function Home() {
         </div>
       </section>
 
-      {/* CTA Section */}
-      <section className="py-16 md:py-24 bg-primary text-primary-foreground">
-        <div className="container text-center">
-          <h2 className="text-3xl md:text-4xl font-bold mb-6">Stop Worrying About Money</h2>
-          <p className="text-lg mb-8 opacity-90">
-            Get the cash you need today. Fast approval, transparent pricing, real support. Apply now.
-          </p>
-          <Button 
-            size="lg" 
-            variant="secondary"
-            onClick={() => (window.location.href = getLoginUrl())}
-          >
-            Start Your Application <ArrowRight className="ml-2 w-4 h-4" />
-          </Button>
+      {/* Testimonials Section */}
+      <section className="py-20 md:py-28 bg-gradient-to-b from-primary/5 to-background">
+        <div className="container">
+          <div className="text-center mb-16">
+            <h2 className="text-4xl md:text-5xl font-bold mb-4 text-foreground">Loved by South Africans</h2>
+            <p className="text-lg text-muted-foreground">Join thousands who've gotten the cash they needed</p>
+          </div>
+
+          <div className="grid md:grid-cols-3 gap-8">
+            {[
+              { name: "Thabo M.", rating: 5, text: "Got approved in 10 minutes. Money was in my account by evening. Incredible service!" },
+              { name: "Naledi K.", rating: 5, text: "No hidden fees, no surprises. NALA is honest about what you'll pay. Highly recommend!" },
+              { name: "Sipho N.", rating: 5, text: "Used NALA twice now. Fast, simple, and they actually care about their customers." }
+            ].map((testimonial, idx) => (
+              <Card key={idx} className="border-2">
+                <CardContent className="pt-6">
+                  <div className="flex gap-1 mb-4">
+                    {[...Array(testimonial.rating)].map((_, i) => (
+                      <Star key={i} className="w-4 h-4 fill-primary text-primary" />
+                    ))}
+                  </div>
+                  <p className="text-muted-foreground mb-4 italic">"{testimonial.text}"</p>
+                  <p className="font-semibold text-foreground">{testimonial.name}</p>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Final CTA Section */}
+      <section className="py-20 md:py-28 bg-gradient-to-r from-primary/10 via-primary/5 to-primary/10">
+        <div className="container">
+          <div className="max-w-3xl mx-auto text-center">
+            <h2 className="text-4xl md:text-5xl font-bold mb-6 text-foreground">
+              Ready to Get Your Loan?
+            </h2>
+            <p className="text-xl text-muted-foreground mb-8">
+              Apply now and get approved in minutes. Money in your account same day.
+            </p>
+            <Button 
+              size="lg" 
+              className="bg-primary hover:bg-primary/90 text-white shadow-lg hover:shadow-xl transition-all px-8 py-6 text-lg"
+              onClick={() => (window.location.href = getLoginUrl())}
+            >
+              Start Your Application <ArrowRight className="ml-2 w-5 h-5" />
+            </Button>
+          </div>
         </div>
       </section>
 
       {/* Footer */}
-      <footer className="border-t border-border bg-background py-12">
+      <footer className="border-t border-border/40 py-12 bg-background">
         <div className="container">
           <div className="grid md:grid-cols-4 gap-8 mb-8">
             <div>
-              <h3 className="font-semibold mb-4">NALA</h3>
-              <p className="text-sm text-muted-foreground">Fast, simple, and honest personal loans for South Africa.</p>
+              <div className="flex items-center gap-2 mb-4">
+                <div className="w-8 h-8 rounded-full bg-primary flex items-center justify-center">
+                  <span className="text-primary-foreground font-bold text-sm">N</span>
+                </div>
+                <span className="font-bold">NALA</span>
+              </div>
+              <p className="text-sm text-muted-foreground">Fast, simple, and honest loans for South Africans.</p>
             </div>
             <div>
               <h4 className="font-semibold mb-4">Product</h4>
-              <ul className="space-y-2 text-sm">
-                <li><a href="#calculator" className="text-muted-foreground hover:text-foreground">Loan Calculator</a></li>
-                <li><a href="#features" className="text-muted-foreground hover:text-foreground">How It Works</a></li>
-                <li><a href="#" className="text-muted-foreground hover:text-foreground">Eligibility</a></li>
+              <ul className="space-y-2 text-sm text-muted-foreground">
+                <li><a href="#calculator" className="hover:text-primary transition-colors">Calculator</a></li>
+                <li><a href="#how-it-works" className="hover:text-primary transition-colors">How It Works</a></li>
+                <li><a href="/faq" className="hover:text-primary transition-colors">FAQ</a></li>
               </ul>
             </div>
             <div>
               <h4 className="font-semibold mb-4">Company</h4>
-              <ul className="space-y-2 text-sm">
-                <li><a href="#" className="text-muted-foreground hover:text-foreground">About Us</a></li>
-                <li><a href="#" className="text-muted-foreground hover:text-foreground">Blog</a></li>
-                <li><a href="#" className="text-muted-foreground hover:text-foreground">Contact</a></li>
+              <ul className="space-y-2 text-sm text-muted-foreground">
+                <li><a href="/about" className="hover:text-primary transition-colors">About Us</a></li>
+                <li><a href="/blog" className="hover:text-primary transition-colors">Blog</a></li>
+                <li><a href="/contact" className="hover:text-primary transition-colors">Contact</a></li>
               </ul>
             </div>
             <div>
               <h4 className="font-semibold mb-4">Legal</h4>
-              <ul className="space-y-2 text-sm">
-                <li><a href="#" className="text-muted-foreground hover:text-foreground">Privacy Policy</a></li>
-                <li><a href="#" className="text-muted-foreground hover:text-foreground">Terms of Service</a></li>
-                <li><a href="#" className="text-muted-foreground hover:text-foreground">Code of Practice</a></li>
+              <ul className="space-y-2 text-sm text-muted-foreground">
+                <li><a href="#" className="hover:text-primary transition-colors">Privacy Policy</a></li>
+                <li><a href="#" className="hover:text-primary transition-colors">Terms of Service</a></li>
+                <li><a href="#" className="hover:text-primary transition-colors">Code of Practice</a></li>
               </ul>
             </div>
           </div>
-          <div className="border-t border-border pt-8 text-center text-sm text-muted-foreground">
-            <p>&copy; 2026 NALA Personal Loans. All rights reserved.</p>
+          <div className="border-t border-border/40 pt-8 text-center text-sm text-muted-foreground">
+            <p>&copy; 2026 NALA Personal Loans. All rights reserved. Licensed and regulated by the National Credit Regulator.</p>
           </div>
         </div>
       </footer>
