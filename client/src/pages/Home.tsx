@@ -224,11 +224,11 @@ export default function Home() {
                         <span className="font-semibold">R {calculation.principal.toLocaleString()}</span>
                       </div>
                       <div className="flex justify-between">
-                        <span className="text-muted-foreground">Interest (20%)</span>
+                        <span className="text-muted-foreground">Interest</span>
                         <span className="font-semibold">R {calculation.interestFee.toLocaleString()}</span>
                       </div>
                       <div className="flex justify-between">
-                        <span className="text-muted-foreground">Fees (20%)</span>
+                        <span className="text-muted-foreground">Fees</span>
                         <span className="font-semibold">R {calculation.adminFee.toLocaleString()}</span>
                       </div>
                       <div className="border-t border-border pt-3">
