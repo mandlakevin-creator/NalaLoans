@@ -47,8 +47,10 @@ export const appRouter = router({
 
         return {
           principal: amount,
+          interest: interestFee,
           interestFee,
           adminFee,
+          processingFee: adminFee,
           totalFees,
           totalRepayment,
           dailyInstallment,

@@ -19,6 +19,9 @@
 - [x] Create loan eligibility checker with pre-qualification logic
 - [x] Display eligibility results with recommended loan amounts
 - [x] Add loan product information display
+- [x] Redesign calculator with Wonga-style transparent cost breakdown
+- [x] Display 40% total cost clearly (20% interest + 20% fees)
+- [x] Update calculator tests to match 40% pricing model
 
 ## Phase 4: Loan Application System
 - [ ] Create multi-step loan application form
@@ -67,7 +70,9 @@
 ## MVP Priority Tasks
 - [x] Fix interest calculation: 40% total (20% NCR cap + 20% admin fees)
 - [x] Make all buttons fully functional with proper navigation
-- [x] Create complete loan application workflow
+- [x] Redesign calculator UI with Wonga-style breakdown
+- [x] Update all calculator tests to pass
+- [ ] Create complete loan application workflow
 - [ ] Implement Stripe payment integration
 - [ ] Add loan repayment system
 - [ ] Push to GitHub repository

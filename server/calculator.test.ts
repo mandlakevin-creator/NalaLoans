@@ -47,9 +47,9 @@ describe("Loan Calculator", () => {
       processingFee: 0,
     });
 
-    // 40% annual = 0.4/365 per day = ~0.001096 per day
-    // 30 days * 0.001096 * 10000 ≈ 328.77
-    expect(result.interest).toBeCloseTo(328.77, 1);
+    // NALA uses flat 20% interest (NCR cap) + 20% admin fees = 40% total
+    // So interest should be 20% of 10000 = 2000
+    expect(result.interest).toBe(2000);
   });
 
   it("handles different loan amounts correctly", async () => {
@@ -92,8 +92,11 @@ describe("Loan Calculator", () => {
       processingFee: 5,
     });
 
-    expect(withFee.processingFee).toBe(250); // 5% of 5000
-    expect(withFee.totalRepayment).toBeGreaterThan(withoutFee.totalRepayment);
+    // NALA uses 20% interest + 20% admin fees = 40% total
+    // So processingFee should be 20% of 5000 = 1000
+    expect(withFee.processingFee).toBe(1000); // 20% of 5000
+    // Both should have same total since NALA always charges 40%
+    expect(withFee.totalRepayment).toBe(withoutFee.totalRepayment);
   });
 });
 

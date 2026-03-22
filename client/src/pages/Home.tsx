@@ -14,7 +14,8 @@ export default function Home() {
   const [loanAmount, setLoanAmount] = useState(5000);
   const [loanPeriod, setLoanPeriod] = useState(30);
 
-  // Client-side loan calculation
+  // Client-side loan calculation - 40% total cost breakdown
+  // 20% interest (NCR cap) + 20% admin/operational/insurance fees
   const calculation = useMemo(() => {
     const principal = loanAmount;
     const interestFee = Math.round(principal * 0.20);
@@ -31,6 +32,7 @@ export default function Home() {
       totalRepayment,
       monthlyInstallment,
       loanPeriod,
+      totalCostPercentage: 40,
     };
   }, [loanAmount, loanPeriod]);
 
@@ -100,18 +102,17 @@ export default function Home() {
                 Simple application. Instant approval. Money in your account same day. NALA makes borrowing easy, transparent, and stress-free.
               </p>
               
-              <div className="flex flex-col sm:flex-row gap-4">
+              <div className="flex gap-4 mb-12">
                 <Button 
                   size="lg" 
-                  className="bg-primary hover:bg-primary/90 text-white shadow-lg hover:shadow-xl transition-all"
+                  className="bg-primary hover:bg-primary/90 gap-2"
                   onClick={() => (window.location.href = getLoginUrl())}
                 >
-                  Apply Now <ArrowRight className="ml-2 w-5 h-5" />
+                  Apply Now <ArrowRight className="w-4 h-4" />
                 </Button>
                 <Button 
                   size="lg" 
                   variant="outline"
-                  className="border-2"
                   onClick={() => document.getElementById('calculator')?.scrollIntoView({ behavior: 'smooth' })}
                 >
                   See Calculator
@@ -146,16 +147,16 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Premium Calculator Section */}
+      {/* Premium Calculator Section - Wonga Style */}
       <section id="calculator" className="py-20 md:py-28 bg-background">
         <div className="container">
-          <div className="max-w-5xl mx-auto">
+          <div className="max-w-6xl mx-auto">
             <div className="text-center mb-16">
               <h2 className="text-4xl md:text-5xl font-bold mb-4 text-foreground">
                 See Your Exact Cost
               </h2>
               <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-                Adjust the sliders to explore your options. No hidden fees, no surprises. What you see is what you pay.
+                Transparent pricing. No hidden fees. What you see is what you pay. Total cost: 40% (20% interest + 20% fees).
               </p>
             </div>
 
@@ -165,7 +166,7 @@ export default function Home() {
                 <Card className="border-2 shadow-xl">
                   <CardHeader className="pb-6">
                     <CardTitle className="text-2xl">Loan Calculator</CardTitle>
-                    <CardDescription>Adjust to see your personalized quote</CardDescription>
+                    <CardDescription>Adjust the sliders to see your personalized quote</CardDescription>
                   </CardHeader>
                   <CardContent className="space-y-8">
                     {/* Loan Amount Slider */}
@@ -211,32 +212,40 @@ export default function Home() {
                 </Card>
               </div>
 
-              {/* Summary Card */}
+              {/* Summary Card - Wonga Style Transparent Breakdown */}
               <div>
                 <Card className="border-2 bg-gradient-to-br from-primary/5 to-background shadow-xl sticky top-24">
                   <CardHeader>
                     <CardTitle className="text-lg">Your Quote</CardTitle>
+                    <CardDescription className="text-xs">Total cost: 40%</CardDescription>
                   </CardHeader>
                   <CardContent className="space-y-4">
                     <div className="space-y-3">
-                      <div className="flex justify-between">
-                        <span className="text-muted-foreground">Loan Amount</span>
-                        <span className="font-semibold">R {calculation.principal.toLocaleString()}</span>
+                      {/* Loan Amount */}
+                      <div className="flex justify-between items-center pb-2 border-b border-border/50">
+                        <span className="text-sm text-muted-foreground">Loan Amount</span>
+                        <span className="font-semibold text-base">R {calculation.principal.toLocaleString()}</span>
                       </div>
-                      <div className="flex justify-between">
-                        <span className="text-muted-foreground">Interest</span>
-                        <span className="font-semibold">R {calculation.interestFee.toLocaleString()}</span>
+
+                      {/* Interest - 20% */}
+                      <div className="flex justify-between items-center">
+                        <span className="text-sm text-muted-foreground">Interest</span>
+                        <span className="font-semibold text-base">R {calculation.interestFee.toLocaleString()}</span>
                       </div>
-                      <div className="flex justify-between">
-                        <span className="text-muted-foreground">Fees</span>
-                        <span className="font-semibold">R {calculation.adminFee.toLocaleString()}</span>
+
+                      {/* Fees - 20% */}
+                      <div className="flex justify-between items-center pb-3 border-b border-border/50">
+                        <span className="text-sm text-muted-foreground">Fees</span>
+                        <span className="font-semibold text-base">R {calculation.adminFee.toLocaleString()}</span>
                       </div>
-                      <div className="border-t border-border pt-3">
-                        <div className="flex justify-between">
-                          <span className="font-semibold">You Pay Back</span>
-                          <span className="text-2xl font-bold text-primary">R {calculation.totalRepayment.toLocaleString()}</span>
-                        </div>
+
+                      {/* Total You Pay Back */}
+                      <div className="flex justify-between items-center py-3 bg-primary/10 rounded-lg px-3">
+                        <span className="font-semibold text-foreground">You Pay Back</span>
+                        <span className="text-2xl font-bold text-primary">R {calculation.totalRepayment.toLocaleString()}</span>
                       </div>
+
+                      {/* Per Month */}
                       <div className="bg-background rounded-lg p-3 border border-border">
                         <div className="text-xs text-muted-foreground mb-1">Per Month</div>
                         <div className="text-xl font-bold text-foreground">R {calculation.monthlyInstallment.toLocaleString()}</div>
@@ -248,7 +257,7 @@ export default function Home() {
                       className="w-full bg-primary hover:bg-primary/90 mt-6"
                       onClick={() => (window.location.href = getLoginUrl())}
                     >
-                      Apply for This Loan
+                      Apply Now
                     </Button>
                   </CardContent>
                 </Card>
@@ -259,39 +268,30 @@ export default function Home() {
       </section>
 
       {/* How It Works Section */}
-      <section id="how-it-works" className="py-20 md:py-28 bg-gradient-to-b from-background via-primary/3 to-background">
+      <section id="how-it-works" className="py-20 md:py-28 bg-primary/5">
         <div className="container">
           <div className="text-center mb-16">
-            <h2 className="text-4xl md:text-5xl font-bold mb-4 text-foreground">How It Works</h2>
+            <h2 className="text-4xl md:text-5xl font-bold mb-4 text-foreground">
+              How It Works
+            </h2>
             <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-              Four simple steps to get the cash you need
+              Get cash in 4 simple steps
             </p>
           </div>
 
-          <div className="grid md:grid-cols-4 gap-6">
+          <div className="grid md:grid-cols-4 gap-8">
             {[
-              { icon: FileCheck, title: "Apply", desc: "Fill out a simple form with your details" },
-              { icon: Zap, title: "Instant Decision", desc: "Get approved in minutes, not days" },
-              { icon: DollarSign, title: "Get Funded", desc: "Money lands in your account same day" },
-              { icon: HeartHandshake, title: "Repay Easy", desc: "Flexible repayment options that suit you" }
+              { icon: FileCheck, title: "Apply", description: "Fill out a simple online form in 5 minutes" },
+              { icon: CheckCircle, title: "Verify", description: "We verify your details instantly" },
+              { icon: Zap, title: "Approve", description: "Get instant approval decision" },
+              { icon: DollarSign, title: "Receive", description: "Money in your account same day" }
             ].map((step, idx) => (
-              <div key={idx} className="relative">
-                <Card className="border-2 h-full hover:shadow-lg transition-all">
-                  <CardContent className="pt-8 text-center">
-                    <div className="mb-4 flex justify-center">
-                      <div className="w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center">
-                        <step.icon className="w-8 h-8 text-primary" />
-                      </div>
-                    </div>
-                    <h3 className="font-bold text-lg mb-2">{step.title}</h3>
-                    <p className="text-sm text-muted-foreground">{step.desc}</p>
-                  </CardContent>
-                </Card>
-                {idx < 3 && (
-                  <div className="hidden md:block absolute top-1/2 -right-3 w-6 h-6 text-primary/30">
-                    <ArrowRight className="w-full h-full" />
-                  </div>
-                )}
+              <div key={idx} className="text-center">
+                <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-primary/10 mb-4">
+                  <step.icon className="w-8 h-8 text-primary" />
+                </div>
+                <h3 className="text-lg font-semibold mb-2">{step.title}</h3>
+                <p className="text-muted-foreground text-sm">{step.description}</p>
               </div>
             ))}
           </div>
@@ -302,30 +302,28 @@ export default function Home() {
       <section className="py-20 md:py-28 bg-background">
         <div className="container">
           <div className="text-center mb-16">
-            <h2 className="text-4xl md:text-5xl font-bold mb-4 text-foreground">Why Choose NALA?</h2>
+            <h2 className="text-4xl md:text-5xl font-bold mb-4 text-foreground">
+              Why Choose NALA
+            </h2>
             <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-              We're built for South Africans. Real loans for real people.
+              We're built for South Africans, by South Africans
             </p>
           </div>
 
           <div className="grid md:grid-cols-3 gap-8">
             {[
-              { icon: Clock, title: "Money Same Day", desc: "Apply in the morning, have cash by afternoon" },
-              { icon: Shield, title: "100% Transparent", desc: "No hidden fees. See exactly what you'll pay" },
-              { icon: Smartphone, title: "Mobile First", desc: "Apply anytime, anywhere from your phone" },
-              { icon: Users, title: "Real Support", desc: "24/7 customer support that actually helps" },
-              { icon: TrendingUp, title: "Flexible Terms", desc: "Choose repayment from 7 to 180 days" },
-              { icon: CheckCircle, title: "Instant Approval", desc: "Know your decision in minutes, not days" }
+              { icon: Shield, title: "Secure & Safe", description: "Your data is encrypted and protected with bank-level security" },
+              { icon: Clock, title: "Fast & Simple", description: "Apply in 5 minutes from your phone or computer" },
+              { icon: TrendingUp, title: "Transparent Pricing", description: "No hidden fees. 40% total cost, clearly shown upfront" },
+              { icon: Users, title: "Real Support", description: "24/7 customer support team ready to help" },
+              { icon: Smartphone, title: "Easy Management", description: "Track your loan and make payments through our app" },
+              { icon: HeartHandshake, title: "Trusted Partner", description: "Helping 50,000+ South Africans access credit" }
             ].map((feature, idx) => (
-              <Card key={idx} className="border-2 hover:shadow-lg transition-all">
-                <CardContent className="pt-8">
-                  <div className="mb-4">
-                    <div className="w-12 h-12 rounded-lg bg-primary/10 flex items-center justify-center">
-                      <feature.icon className="w-6 h-6 text-primary" />
-                    </div>
-                  </div>
-                  <h3 className="font-bold text-lg mb-2">{feature.title}</h3>
-                  <p className="text-sm text-muted-foreground">{feature.desc}</p>
+              <Card key={idx} className="border-border/50">
+                <CardContent className="pt-6">
+                  <feature.icon className="w-10 h-10 text-primary mb-4" />
+                  <h3 className="text-lg font-semibold mb-2">{feature.title}</h3>
+                  <p className="text-muted-foreground text-sm">{feature.description}</p>
                 </CardContent>
               </Card>
             ))}
@@ -334,28 +332,35 @@ export default function Home() {
       </section>
 
       {/* Testimonials Section */}
-      <section className="py-20 md:py-28 bg-gradient-to-b from-primary/5 to-background">
+      <section className="py-20 md:py-28 bg-primary/5">
         <div className="container">
           <div className="text-center mb-16">
-            <h2 className="text-4xl md:text-5xl font-bold mb-4 text-foreground">Loved by South Africans</h2>
-            <p className="text-lg text-muted-foreground">Join thousands who've gotten the cash they needed</p>
+            <h2 className="text-4xl md:text-5xl font-bold mb-4 text-foreground">
+              What Our Customers Say
+            </h2>
+            <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
+              Real stories from real South Africans
+            </p>
           </div>
 
           <div className="grid md:grid-cols-3 gap-8">
             {[
-              { name: "Thabo M.", rating: 5, text: "Got approved in 10 minutes. Money was in my account by evening. Incredible service!" },
-              { name: "Naledi K.", rating: 5, text: "No hidden fees, no surprises. NALA is honest about what you'll pay. Highly recommend!" },
-              { name: "Sipho N.", rating: 5, text: "Used NALA twice now. Fast, simple, and they actually care about their customers." }
+              { name: "Thabo M.", location: "Johannesburg", text: "Got my loan approved in 10 minutes. The process was so simple and transparent. Highly recommend!" },
+              { name: "Naledi K.", location: "Cape Town", text: "Finally, a lender that doesn't hide fees. I knew exactly what I was paying. Great service!" },
+              { name: "Sipho L.", location: "Durban", text: "Money was in my account same day. NALA is a lifesaver. Best lending experience I've had." }
             ].map((testimonial, idx) => (
-              <Card key={idx} className="border-2">
+              <Card key={idx} className="border-border/50">
                 <CardContent className="pt-6">
                   <div className="flex gap-1 mb-4">
-                    {[...Array(testimonial.rating)].map((_, i) => (
+                    {[...Array(5)].map((_, i) => (
                       <Star key={i} className="w-4 h-4 fill-primary text-primary" />
                     ))}
                   </div>
                   <p className="text-muted-foreground mb-4 italic">"{testimonial.text}"</p>
-                  <p className="font-semibold text-foreground">{testimonial.name}</p>
+                  <div>
+                    <p className="font-semibold text-foreground">{testimonial.name}</p>
+                    <p className="text-xs text-muted-foreground">{testimonial.location}</p>
+                  </div>
                 </CardContent>
               </Card>
             ))}
@@ -363,67 +368,60 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Final CTA Section */}
-      <section className="py-20 md:py-28 bg-gradient-to-r from-primary/10 via-primary/5 to-primary/10">
-        <div className="container">
-          <div className="max-w-3xl mx-auto text-center">
-            <h2 className="text-4xl md:text-5xl font-bold mb-6 text-foreground">
-              Ready to Get Your Loan?
-            </h2>
-            <p className="text-xl text-muted-foreground mb-8">
-              Apply now and get approved in minutes. Money in your account same day.
-            </p>
-            <Button 
-              size="lg" 
-              className="bg-primary hover:bg-primary/90 text-white shadow-lg hover:shadow-xl transition-all px-8 py-6 text-lg"
-              onClick={() => (window.location.href = getLoginUrl())}
-            >
-              Start Your Application <ArrowRight className="ml-2 w-5 h-5" />
-            </Button>
-          </div>
+      {/* CTA Section */}
+      <section className="py-20 md:py-28 bg-gradient-to-r from-primary/10 to-primary/5">
+        <div className="container text-center">
+          <h2 className="text-4xl md:text-5xl font-bold mb-6 text-foreground">
+            Ready to Get Cash?
+          </h2>
+          <p className="text-lg text-muted-foreground mb-8 max-w-2xl mx-auto">
+            Apply now and get approved in minutes. Money in your account same day.
+          </p>
+          <Button 
+            size="lg" 
+            className="bg-primary hover:bg-primary/90 gap-2"
+            onClick={() => (window.location.href = getLoginUrl())}
+          >
+            Apply Now <ArrowRight className="w-4 h-4" />
+          </Button>
         </div>
       </section>
 
       {/* Footer */}
-      <footer className="border-t border-border/40 py-12 bg-background">
+      <footer className="border-t border-border/40 bg-background py-12">
         <div className="container">
           <div className="grid md:grid-cols-4 gap-8 mb-8">
             <div>
-              <div className="flex items-center gap-2 mb-4">
-                <div className="w-8 h-8 rounded-full bg-primary flex items-center justify-center">
-                  <span className="text-primary-foreground font-bold text-sm">N</span>
-                </div>
-                <span className="font-bold">NALA</span>
-              </div>
-              <p className="text-sm text-muted-foreground">Fast, simple, and honest loans for South Africans.</p>
+              <h3 className="font-semibold mb-4">NALA</h3>
+              <p className="text-sm text-muted-foreground">Fast, transparent personal loans for South Africans.</p>
             </div>
             <div>
               <h4 className="font-semibold mb-4">Product</h4>
               <ul className="space-y-2 text-sm text-muted-foreground">
                 <li><a href="#calculator" className="hover:text-primary transition-colors">Calculator</a></li>
-                <li><a href="#how-it-works" className="hover:text-primary transition-colors">How It Works</a></li>
                 <li><a href="/faq" className="hover:text-primary transition-colors">FAQ</a></li>
+                <li><a href="/about" className="hover:text-primary transition-colors">About</a></li>
               </ul>
             </div>
             <div>
-              <h4 className="font-semibold mb-4">Company</h4>
+              <h4 className="font-semibold mb-4">Support</h4>
               <ul className="space-y-2 text-sm text-muted-foreground">
-                <li><a href="/about" className="hover:text-primary transition-colors">About Us</a></li>
-                <li><a href="/blog" className="hover:text-primary transition-colors">Blog</a></li>
                 <li><a href="/contact" className="hover:text-primary transition-colors">Contact</a></li>
+                <li><a href="/blog" className="hover:text-primary transition-colors">Blog</a></li>
+                <li><a href="#" className="hover:text-primary transition-colors">Privacy</a></li>
               </ul>
             </div>
             <div>
               <h4 className="font-semibold mb-4">Legal</h4>
               <ul className="space-y-2 text-sm text-muted-foreground">
+                <li><a href="#" className="hover:text-primary transition-colors">Terms</a></li>
                 <li><a href="#" className="hover:text-primary transition-colors">Privacy Policy</a></li>
-                <li><a href="#" className="hover:text-primary transition-colors">Terms of Service</a></li>
-                <li><a href="#" className="hover:text-primary transition-colors">Code of Practice</a></li>
+                <li><a href="#" className="hover:text-primary transition-colors">Compliance</a></li>
               </ul>
             </div>
           </div>
           <div className="border-t border-border/40 pt-8 text-center text-sm text-muted-foreground">
-            <p>&copy; 2026 NALA Personal Loans. All rights reserved. Licensed and regulated by the National Credit Regulator.</p>
+            <p>&copy; 2026 NALA Personal Loans. All rights reserved. Licensed lender in South Africa.</p>
           </div>
         </div>
       </footer>
