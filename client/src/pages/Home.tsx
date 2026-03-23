@@ -11,7 +11,7 @@ import { useAuth } from "@/_core/hooks/useAuth";
 
 export default function Home() {
   const { user, isAuthenticated, logout } = useAuth();
-  const [loanAmount, setLoanAmount] = useState(2000);
+  const [loanAmount, setLoanAmount] = useState(5000);
   const [loanPeriod, setLoanPeriod] = useState(30);
 
   // Client-side loan calculation - 40% total cost breakdown
@@ -301,7 +301,7 @@ export default function Home() {
               <div className="bg-gradient-to-br from-primary/15 to-primary/5 rounded-3xl p-12 aspect-square flex items-center justify-center shadow-2xl">
                 <div className="relative">
                   <div className="absolute inset-0 bg-primary/20 rounded-full blur-2xl"></div>
-                  <DollarSign className="w-48 h-48 text-primary/40 relative z-10" />
+                  <DollarSign className="w-64 h-64 text-primary/50 relative z-10" />
                 </div>
               </div>
             </div>
@@ -354,12 +354,12 @@ export default function Home() {
 
           <div className="grid md:grid-cols-3 gap-8">
             {[
-              { icon: Shield, title: "Secure & Safe", description: "Your data is encrypted and protected with bank-level security" },
-              { icon: Clock, title: "Fast & Simple", description: "Apply in 5 minutes from your phone or computer" },
-              { icon: TrendingUp, title: "Transparent Pricing", description: "No hidden fees. 40% total cost, clearly shown upfront" },
-              { icon: Users, title: "Real Support", description: "24/7 customer support team ready to help" },
-              { icon: Smartphone, title: "Easy Management", description: "Track your loan and make payments through our app" },
-              { icon: HeartHandshake, title: "Trusted Partner", description: "Helping 50,000+ South Africans access credit" }
+              { icon: Clock, title: "Money Same Day", description: "Apply in the morning, have cash by afternoon" },
+              { icon: TrendingUp, title: "100% Transparent", description: "No hidden fees. See exactly what you'll pay" },
+              { icon: Smartphone, title: "Mobile First", description: "Apply anytime, anywhere from your phone" },
+              { icon: Users, title: "Real Support", description: "24/7 customer support that actually helps" },
+              { icon: Shield, title: "Flexible Terms", description: "Choose repayment from 7 to 180 days" },
+              { icon: Zap, title: "Instant Approval", description: "Know your decision in minutes, not days" }
             ].map((feature, idx) => (
               <Card key={idx} className="border-border/50">
                 <CardContent className="pt-6">
@@ -387,9 +387,9 @@ export default function Home() {
 
           <div className="grid md:grid-cols-3 gap-8">
             {[
-              { name: "Thabo M.", location: "Johannesburg", text: "Got my loan approved in 10 minutes. The process was so simple and transparent. Highly recommend!" },
-              { name: "Naledi K.", location: "Cape Town", text: "Finally, a lender that doesn't hide fees. I knew exactly what I was paying. Great service!" },
-              { name: "Sipho L.", location: "Durban", text: "Money was in my account same day. NALA is a lifesaver. Best lending experience I've had." }
+              { name: "Thabo M.", location: "", text: "Got approved in 10 minutes. Money was in my account by evening. Incredible service!" },
+              { name: "Naledi K.", location: "", text: "No hidden fees, no surprises. NALA is honest about what you'll pay. Highly recommend!" },
+              { name: "Sipho N.", location: "", text: "Used NALA twice now. Fast, simple, and they actually care about their customers." }
             ].map((testimonial, idx) => (
               <Card key={idx} className="border-border/50">
                 <CardContent className="pt-6">
@@ -401,7 +401,7 @@ export default function Home() {
                   <p className="text-muted-foreground mb-4 italic">"{testimonial.text}"</p>
                   <div>
                     <p className="font-semibold text-foreground">{testimonial.name}</p>
-                    <p className="text-xs text-muted-foreground">{testimonial.location}</p>
+                    {testimonial.location && <p className="text-xs text-muted-foreground">{testimonial.location}</p>}
                   </div>
                 </CardContent>
               </Card>

@@ -82,6 +82,18 @@
 - [ ] Create deployment checklist
 - [ ] Prepare launch documentation
 
+## Design Matching Tasks (Vercel Deployment)
+- [x] Update hero section with large dollar sign icon on right
+- [x] Change hero layout to asymmetric design
+- [x] Make "No Stress" text green in hero heading
+- [x] Change calculator default values: R5,000 loan (from R2,000)
+- [x] Update feature names to match Vercel exactly
+- [x] Update testimonial quotes and names
+- [ ] Add footer links: Blog, Contact, Code of Practice
+- [ ] Fine-tune green color to match Vercel exactly
+- [ ] Verify button styling matches Vercel
+- [x] Test all pages match Vercel deployment (13/13 tests passing)
+
 ## MVP Priority Tasks
 - [x] Fix interest calculation: 40% total (20% NCR cap + 20% admin fees)
 - [x] Make all buttons fully functional with proper navigation
@@ -90,6 +102,7 @@
 - [x] Move calculator above fold with preset buttons
 - [x] Add compliance badges and trust signals
 - [x] Create FAQ, About, and improved Home pages
+- [ ] Match Vercel deployment design exactly
 - [ ] Create complete loan application workflow (5-step form)
 - [ ] Implement email + SA ID authentication
 - [ ] Implement Stripe payment integration
