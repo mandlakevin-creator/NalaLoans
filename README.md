@@ -269,3 +269,4 @@ For support, contact: support@nalaloans.com
 **Version**: 1.0.0 (MVP)  
 **Last Updated**: March 2026  
 **Status**: Production Ready
+// Vercel rebuild trigger
