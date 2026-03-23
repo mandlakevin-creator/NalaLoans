@@ -3,7 +3,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Slider } from "@/components/ui/slider";
 import { 
   ArrowRight, CheckCircle, Clock, Shield, Zap, Users, TrendingUp, 
-  DollarSign, FileCheck, Smartphone, HeartHandshake, Star
+  DollarSign, FileCheck, Smartphone, HeartHandshake, Star, Lock, Award
 } from "lucide-react";
 import { getLoginUrl } from "@/const";
 import { useState, useMemo } from "react";
@@ -11,7 +11,7 @@ import { useAuth } from "@/_core/hooks/useAuth";
 
 export default function Home() {
   const { user, isAuthenticated, logout } = useAuth();
-  const [loanAmount, setLoanAmount] = useState(5000);
+  const [loanAmount, setLoanAmount] = useState(2000);
   const [loanPeriod, setLoanPeriod] = useState(30);
 
   // Client-side loan calculation - 40% total cost breakdown
@@ -35,6 +35,9 @@ export default function Home() {
       totalCostPercentage: 40,
     };
   }, [loanAmount, loanPeriod]);
+
+  // Preset period buttons
+  const periodPresets = [7, 14, 30, 60, 90, 180];
 
   return (
     <div className="min-h-screen bg-background">
@@ -80,81 +83,39 @@ export default function Home() {
         </div>
       </nav>
 
-      {/* Premium Hero Section */}
-      <section className="py-20 md:py-32 bg-gradient-to-b from-primary/8 via-background to-background relative overflow-hidden">
-        <div className="absolute inset-0 overflow-hidden pointer-events-none">
-          <div className="absolute top-20 right-10 w-72 h-72 bg-primary/5 rounded-full blur-3xl"></div>
-          <div className="absolute bottom-0 left-10 w-96 h-96 bg-primary/3 rounded-full blur-3xl"></div>
-        </div>
-        
-        <div className="container relative z-10">
-          <div className="grid md:grid-cols-2 gap-12 items-center">
-            <div>
-              <div className="inline-block mb-6 px-4 py-2 bg-primary/10 rounded-full border border-primary/20">
-                <span className="text-sm font-medium text-primary">✨ Trusted by 50,000+ South Africans</span>
-              </div>
-              
-              <h1 className="text-5xl md:text-6xl font-bold text-foreground mb-6 leading-tight">
-                Get Cash Fast, <span className="text-primary">No Stress</span>
-              </h1>
-              
-              <p className="text-xl text-muted-foreground mb-8 leading-relaxed">
-                Simple application. Instant approval. Money in your account same day. NALA makes borrowing easy, transparent, and stress-free.
-              </p>
-              
-              <div className="flex gap-4 mb-12">
-                <Button 
-                  size="lg" 
-                  className="bg-primary hover:bg-primary/90 gap-2"
-                  onClick={() => (window.location.href = getLoginUrl())}
-                >
-                  Apply Now <ArrowRight className="w-4 h-4" />
-                </Button>
-                <Button 
-                  size="lg" 
-                  variant="outline"
-                  onClick={() => document.getElementById('calculator')?.scrollIntoView({ behavior: 'smooth' })}
-                >
-                  See Calculator
-                </Button>
-              </div>
-
-              <div className="mt-12 grid grid-cols-3 gap-6">
-                <div>
-                  <div className="text-3xl font-bold text-primary">5 min</div>
-                  <p className="text-sm text-muted-foreground">Quick Apply</p>
-                </div>
-                <div>
-                  <div className="text-3xl font-bold text-primary">24/7</div>
-                  <p className="text-sm text-muted-foreground">Support</p>
-                </div>
-                <div>
-                  <div className="text-3xl font-bold text-primary">100%</div>
-                  <p className="text-sm text-muted-foreground">Transparent</p>
-                </div>
-              </div>
-            </div>
-
-            <div className="hidden md:block">
-              <div className="bg-gradient-to-br from-primary/15 to-primary/5 rounded-3xl p-12 aspect-square flex items-center justify-center shadow-2xl">
-                <div className="relative">
-                  <div className="absolute inset-0 bg-primary/20 rounded-full blur-2xl"></div>
-                  <DollarSign className="w-48 h-48 text-primary/40 relative z-10" />
-                </div>
-              </div>
-            </div>
+      {/* Compliance Badges Bar */}
+      <div className="bg-primary/5 border-b border-primary/10 py-3">
+        <div className="container flex flex-wrap justify-center gap-6 text-xs md:text-sm">
+          <div className="flex items-center gap-2 text-muted-foreground">
+            <Award className="w-4 h-4 text-primary" />
+            <span>NCRA Registered</span>
+          </div>
+          <div className="flex items-center gap-2 text-muted-foreground">
+            <Lock className="w-4 h-4 text-primary" />
+            <span>POPIA Compliant</span>
+          </div>
+          <div className="flex items-center gap-2 text-muted-foreground">
+            <Shield className="w-4 h-4 text-primary" />
+            <span>256-bit Encrypted</span>
+          </div>
+          <div className="flex items-center gap-2 text-muted-foreground">
+            <Clock className="w-4 h-4 text-primary" />
+            <span>24/7 Support</span>
           </div>
         </div>
-      </section>
+      </div>
 
-      {/* Premium Calculator Section - Wonga Style */}
-      <section id="calculator" className="py-20 md:py-28 bg-background">
+      {/* Premium Calculator Section - MOVED ABOVE FOLD */}
+      <section id="calculator" className="py-16 md:py-24 bg-gradient-to-b from-primary/8 via-background to-background">
         <div className="container">
           <div className="max-w-6xl mx-auto">
-            <div className="text-center mb-16">
-              <h2 className="text-4xl md:text-5xl font-bold mb-4 text-foreground">
+            <div className="text-center mb-12">
+              <div className="inline-block mb-4 px-4 py-2 bg-primary/10 rounded-full border border-primary/20">
+                <span className="text-sm font-medium text-primary">✨ Trusted by 50,000+ South Africans</span>
+              </div>
+              <h1 className="text-4xl md:text-5xl font-bold mb-4 text-foreground">
                 See Your Exact Cost
-              </h2>
+              </h1>
               <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
                 Transparent pricing. No hidden fees. What you see is what you pay. Total cost: 40% (20% interest + 20% fees).
               </p>
@@ -208,6 +169,24 @@ export default function Home() {
                         <span>180 days</span>
                       </div>
                     </div>
+
+                    {/* Preset Period Buttons */}
+                    <div>
+                      <label className="text-sm font-semibold text-foreground block mb-3">Quick Select</label>
+                      <div className="grid grid-cols-3 gap-2">
+                        {periodPresets.map((period) => (
+                          <Button
+                            key={period}
+                            variant={loanPeriod === period ? "default" : "outline"}
+                            size="sm"
+                            onClick={() => setLoanPeriod(period)}
+                            className={loanPeriod === period ? "bg-primary hover:bg-primary/90" : ""}
+                          >
+                            {period}d
+                          </Button>
+                        ))}
+                      </div>
+                    </div>
                   </CardContent>
                 </Card>
               </div>
@@ -217,7 +196,7 @@ export default function Home() {
                 <Card className="border-2 bg-gradient-to-br from-primary/5 to-background shadow-xl sticky top-24">
                   <CardHeader>
                     <CardTitle className="text-lg">Your Quote</CardTitle>
-                    <CardDescription className="text-xs">Total cost: 40%</CardDescription>
+                    <CardDescription className="text-xs">No hidden fees</CardDescription>
                   </CardHeader>
                   <CardContent className="space-y-4">
                     <div className="space-y-3">
@@ -229,13 +208,13 @@ export default function Home() {
 
                       {/* Interest - 20% */}
                       <div className="flex justify-between items-center">
-                        <span className="text-sm text-muted-foreground">Interest</span>
+                        <span className="text-sm text-muted-foreground">Interest (20%)</span>
                         <span className="font-semibold text-base">R {calculation.interestFee.toLocaleString()}</span>
                       </div>
 
                       {/* Fees - 20% */}
                       <div className="flex justify-between items-center pb-3 border-b border-border/50">
-                        <span className="text-sm text-muted-foreground">Fees</span>
+                        <span className="text-sm text-muted-foreground">Fees (20%)</span>
                         <span className="font-semibold text-base">R {calculation.adminFee.toLocaleString()}</span>
                       </div>
 
@@ -257,10 +236,73 @@ export default function Home() {
                       className="w-full bg-primary hover:bg-primary/90 mt-6"
                       onClick={() => (window.location.href = getLoginUrl())}
                     >
-                      Apply Now
+                      Apply Now <ArrowRight className="w-4 h-4 ml-2" />
                     </Button>
                   </CardContent>
                 </Card>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Premium Hero Section */}
+      <section className="py-20 md:py-32 bg-gradient-to-b from-background via-background to-primary/5 relative overflow-hidden">
+        <div className="absolute inset-0 overflow-hidden pointer-events-none">
+          <div className="absolute top-20 right-10 w-72 h-72 bg-primary/5 rounded-full blur-3xl"></div>
+          <div className="absolute bottom-0 left-10 w-96 h-96 bg-primary/3 rounded-full blur-3xl"></div>
+        </div>
+        
+        <div className="container relative z-10">
+          <div className="grid md:grid-cols-2 gap-12 items-center">
+            <div>
+              <h2 className="text-4xl md:text-5xl font-bold text-foreground mb-6 leading-tight">
+                Get Cash Fast, <span className="text-primary">No Stress</span>
+              </h2>
+              
+              <p className="text-xl text-muted-foreground mb-8 leading-relaxed">
+                Simple application. Instant approval. Money in your account same day. NALA makes borrowing easy, transparent, and stress-free.
+              </p>
+              
+              <div className="flex gap-4 mb-12 flex-wrap">
+                <Button 
+                  size="lg" 
+                  className="bg-primary hover:bg-primary/90 gap-2"
+                  onClick={() => (window.location.href = getLoginUrl())}
+                >
+                  Apply Now <ArrowRight className="w-4 h-4" />
+                </Button>
+                <Button 
+                  size="lg" 
+                  variant="outline"
+                  onClick={() => document.getElementById('how-it-works')?.scrollIntoView({ behavior: 'smooth' })}
+                >
+                  Learn More
+                </Button>
+              </div>
+
+              <div className="mt-12 grid grid-cols-3 gap-6">
+                <div>
+                  <div className="text-3xl font-bold text-primary">5 min</div>
+                  <p className="text-sm text-muted-foreground">Quick Apply</p>
+                </div>
+                <div>
+                  <div className="text-3xl font-bold text-primary">24/7</div>
+                  <p className="text-sm text-muted-foreground">Support</p>
+                </div>
+                <div>
+                  <div className="text-3xl font-bold text-primary">100%</div>
+                  <p className="text-sm text-muted-foreground">Transparent</p>
+                </div>
+              </div>
+            </div>
+
+            <div className="hidden md:block">
+              <div className="bg-gradient-to-br from-primary/15 to-primary/5 rounded-3xl p-12 aspect-square flex items-center justify-center shadow-2xl">
+                <div className="relative">
+                  <div className="absolute inset-0 bg-primary/20 rounded-full blur-2xl"></div>
+                  <DollarSign className="w-48 h-48 text-primary/40 relative z-10" />
+                </div>
               </div>
             </div>
           </div>

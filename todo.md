@@ -6,6 +6,20 @@
 - [x] Create reusable UI components (buttons, cards, forms, modals)
 - [x] Implement responsive navigation and layout structure
 
+## Phase 1.5: Landing Page Improvements (COMPLETE)
+- [x] Move calculator above fold on homepage
+- [x] Add preset period buttons (7, 14, 30, 60, 90, 180 days)
+- [x] Add compliance badges (NCRA, POPIA, 256-bit, 24/7 support)
+- [x] Create premium navigation with active page highlighting
+- [x] Add How It Works section with 4-step process
+- [x] Add Why Choose NALA features section (6 features)
+- [x] Add customer testimonials section
+- [x] Create FAQ page with 12 common questions
+- [x] Create About page with mission, values, and why NALA
+- [x] Update footer with consistent navigation
+- [x] Add authentication support (Login/Logout buttons)
+- [x] All navigation buttons fully functional
+
 ## Phase 2: Database & Authentication
 - [x] Design database schema (users, loans, applications, payments, transactions)
 - [ ] Implement user registration with email/phone validation
@@ -54,11 +68,12 @@
 - [ ] Add blog/resource listing page
 
 ## Phase 8: Mobile Optimization & Polish
-- [ ] Test responsive design across devices
+- [x] Test responsive design across devices (Home, FAQ, About pages)
 - [ ] Optimize performance and load times
 - [ ] Implement proper error handling and validation
 - [ ] Add loading states and skeleton screens
 - [x] Create comprehensive unit tests (calculator & eligibility)
+- [x] All 13 tests passing (auth.logout, calculator)
 - [ ] Perform accessibility audit
 
 ## Phase 9: Deployment & Launch
@@ -71,8 +86,12 @@
 - [x] Fix interest calculation: 40% total (20% NCR cap + 20% admin fees)
 - [x] Make all buttons fully functional with proper navigation
 - [x] Redesign calculator UI with Wonga-style breakdown
-- [x] Update all calculator tests to pass
-- [ ] Create complete loan application workflow
+- [x] Update all calculator tests to pass (13/13 passing)
+- [x] Move calculator above fold with preset buttons
+- [x] Add compliance badges and trust signals
+- [x] Create FAQ, About, and improved Home pages
+- [ ] Create complete loan application workflow (5-step form)
+- [ ] Implement email + SA ID authentication
 - [ ] Implement Stripe payment integration
 - [ ] Add loan repayment system
 - [ ] Push to GitHub repository

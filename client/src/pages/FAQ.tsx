@@ -3,106 +3,142 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { ArrowRight, ChevronDown } from "lucide-react";
 import { getLoginUrl } from "@/const";
 import { useState } from "react";
+import { useAuth } from "@/_core/hooks/useAuth";
 
 export default function FAQPage() {
+  const { user, isAuthenticated, logout } = useAuth();
   const [openIndex, setOpenIndex] = useState<number | null>(0);
 
   const faqs = [
     {
-      question: "How quickly can I get approved?",
-      answer: "Most applications are approved within minutes. Once approved, funds are transferred to your bank account the same day."
+      question: "How much can I borrow?",
+      answer: "You can borrow between R1,000 and R50,000. First-time borrowers typically start with lower amounts and can increase their limit after successfully repaying their first loan."
     },
     {
-      question: "What's the interest rate?",
-      answer: "NALA charges 20% interest plus 20% in fees and operational costs, totaling 40% on your loan amount. This is transparent and shown upfront."
-    },
-    {
-      question: "What do I need to apply?",
-      answer: "You'll need a valid South African ID, proof of income (payslips or bank statements), and a bank account. The application takes about 5 minutes."
-    },
-    {
-      question: "Can I repay early?",
-      answer: "Yes! You can repay your loan early with no penalties. We encourage early repayment to save you money."
-    },
-    {
-      question: "What if I can't repay on time?",
-      answer: "Contact us immediately. We work with customers to find solutions. Late fees apply, but we're here to help, not punish."
-    },
-    {
-      question: "Is my information secure?",
-      answer: "Absolutely. We use bank-level encryption to protect your data. Your information is never shared with third parties."
-    },
-    {
-      question: "Can I apply if I'm self-employed?",
-      answer: "Yes! We accept self-employed applicants. You'll need to provide bank statements showing regular income."
-    },
-    {
-      question: "What's the maximum loan amount?",
-      answer: "You can borrow up to R50,000. The exact amount depends on your income and employment status."
+      question: "What's the total cost of borrowing?",
+      answer: "The total cost is 40% of your loan amount. This breaks down as: 20% interest (NCR regulated cap) + 20% fees (administrative, operational, and insurance). For example, if you borrow R5,000, you'll pay back R7,000."
     },
     {
       question: "How long do I have to repay?",
-      answer: "You can choose a repayment period from 7 days to 180 days. Pick what works best for your budget."
+      answer: "You can choose repayment periods from 7 to 180 days. Popular options are 7 days (emergency), 30 days (standard), and 90 days (longer-term). The longer the period, the lower your monthly payment."
     },
     {
-      question: "Do you do credit checks?",
-      answer: "We do soft credit checks, but we don't reject people based on bad credit history. We focus on current income and ability to repay."
+      question: "How quickly can I get approved?",
+      answer: "Most applications are approved within 5 minutes. Once approved, money is typically transferred to your bank account within 1 hour, same day."
+    },
+    {
+      question: "What documents do I need?",
+      answer: "You'll need your South African ID number, email address, phone number, monthly income information, and bank account details for disbursement. That's it!"
+    },
+    {
+      question: "Is my data safe?",
+      answer: "Yes. We use 256-bit encryption to protect your data. We're POPIA compliant and never share your information with third parties without your consent."
+    },
+    {
+      question: "What if I can't repay on time?",
+      answer: "Contact our support team immediately. We offer flexible repayment options and can discuss alternative arrangements. Late payments may incur additional fees."
+    },
+    {
+      question: "Can I pay early?",
+      answer: "Yes! You can repay your loan early at any time without penalties. Early repayment will reduce the total interest you pay."
+    },
+    {
+      question: "Is NALA regulated?",
+      answer: "Yes. NALA is registered with the NCRA (National Credit Regulator of South Africa) and complies with all NCR regulations and POPIA requirements."
+    },
+    {
+      question: "How do I apply?",
+      answer: "Click 'Apply Now' and fill out our simple online form. It takes about 5 minutes. You'll need your ID number, email, phone, income details, and bank account information."
+    },
+    {
+      question: "Can I get a loan if I have bad credit?",
+      answer: "We consider applications from people with various credit histories. Your eligibility depends on factors like income, employment status, and age. Use our calculator to check if you qualify."
+    },
+    {
+      question: "What's your customer support like?",
+      answer: "We offer 24/7 customer support via phone, email, and live chat. Our average response time is 2 minutes. We're here to help with any questions or concerns."
     }
   ];
 
   return (
     <div className="min-h-screen bg-background">
       {/* Navigation */}
-      <nav className="border-b border-border sticky top-0 z-50 bg-background/95 backdrop-blur">
+      <nav className="border-b border-border/40 sticky top-0 z-50 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
         <div className="container flex items-center justify-between h-16">
-          <a href="/" className="flex items-center gap-2">
-            <div className="w-8 h-8 rounded-full bg-primary flex items-center justify-center">
-              <span className="text-primary-foreground font-bold text-sm">N</span>
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 rounded-full bg-gradient-to-br from-primary to-primary/80 flex items-center justify-center shadow-lg">
+              <span className="text-primary-foreground font-bold text-lg">N</span>
             </div>
-            <span className="font-bold text-lg">NALA</span>
-          </a>
-          <Button size="sm" onClick={() => (window.location.href = getLoginUrl())}>
-            Login
-          </Button>
+            <span className="font-bold text-xl text-foreground">NALA</span>
+          </div>
+
+          <div className="hidden md:flex items-center gap-8">
+            <a href="/" className="text-sm font-medium text-muted-foreground hover:text-primary transition-colors">
+              Home
+            </a>
+            <a href="/#calculator" className="text-sm font-medium text-muted-foreground hover:text-primary transition-colors">
+              Calculator
+            </a>
+            <a href="/faq" className="text-sm font-medium text-primary transition-colors font-semibold">
+              FAQ
+            </a>
+            <a href="/about" className="text-sm font-medium text-muted-foreground hover:text-primary transition-colors">
+              About
+            </a>
+          </div>
+
+          <div className="flex items-center gap-4">
+            {isAuthenticated ? (
+              <>
+                <span className="text-sm text-muted-foreground">{user?.name}</span>
+                <Button variant="outline" size="sm" onClick={logout}>
+                  Logout
+                </Button>
+              </>
+            ) : (
+              <Button size="sm" className="bg-primary hover:bg-primary/90" onClick={() => (window.location.href = getLoginUrl())}>
+                Login
+              </Button>
+            )}
+          </div>
         </div>
       </nav>
 
-      {/* Hero */}
-      <section className="py-16 md:py-24 bg-gradient-to-b from-primary/5 to-background">
-        <div className="container">
-          <div className="max-w-3xl mx-auto text-center">
-            <h1 className="text-4xl md:text-5xl font-bold mb-6">Frequently Asked Questions</h1>
-            <p className="text-xl text-muted-foreground">
-              Find answers to common questions about NALA loans.
+      {/* Hero Section */}
+      <section className="py-16 md:py-24 bg-gradient-to-b from-primary/8 via-background to-background">
+        <div className="container max-w-3xl">
+          <div className="text-center mb-12">
+            <h1 className="text-4xl md:text-5xl font-bold mb-4 text-foreground">
+              Frequently Asked Questions
+            </h1>
+            <p className="text-lg text-muted-foreground">
+              Find answers to common questions about NALA loans, application process, and more.
             </p>
           </div>
         </div>
       </section>
 
-      {/* FAQs */}
-      <section className="py-16 md:py-24">
+      {/* FAQ Content */}
+      <section className="py-16 md:py-24 bg-background">
         <div className="container max-w-3xl">
           <div className="space-y-4">
             {faqs.map((faq, index) => (
-              <Card 
-                key={index}
-                className="border-border cursor-pointer hover:border-primary/50 transition-colors"
-                onClick={() => setOpenIndex(openIndex === index ? null : index)}
-              >
-                <CardHeader>
-                  <div className="flex items-center justify-between">
-                    <CardTitle className="text-lg">{faq.question}</CardTitle>
-                    <ChevronDown 
-                      className={`w-5 h-5 text-primary transition-transform ${
-                        openIndex === index ? "transform rotate-180" : ""
-                      }`}
-                    />
-                  </div>
-                </CardHeader>
+              <Card key={index} className="border-border/50 overflow-hidden">
+                <button
+                  onClick={() => setOpenIndex(openIndex === index ? null : index)}
+                  className="w-full px-6 py-4 flex items-center justify-between hover:bg-primary/5 transition-colors"
+                >
+                  <h3 className="text-lg font-semibold text-foreground text-left">{faq.question}</h3>
+                  <ChevronDown 
+                    className={`w-5 h-5 text-primary transition-transform duration-200 flex-shrink-0 ml-4 ${
+                      openIndex === index ? 'transform rotate-180' : ''
+                    }`}
+                  />
+                </button>
                 {openIndex === index && (
-                  <CardContent>
-                    <p className="text-muted-foreground">{faq.answer}</p>
-                  </CardContent>
+                  <div className="px-6 py-4 border-t border-border/50 bg-primary/2">
+                    <p className="text-muted-foreground leading-relaxed">{faq.answer}</p>
+                  </div>
                 )}
               </Card>
             ))}
@@ -110,56 +146,69 @@ export default function FAQPage() {
         </div>
       </section>
 
-      {/* CTA */}
-      <section className="py-16 md:py-24 bg-primary text-primary-foreground">
-        <div className="container text-center">
-          <h2 className="text-3xl font-bold mb-6">Still Have Questions?</h2>
-          <p className="text-lg mb-8 opacity-90">
-            Our support team is ready to help. Get in touch anytime.
+      {/* CTA Section */}
+      <section className="py-16 md:py-24 bg-gradient-to-r from-primary/10 to-primary/5">
+        <div className="container text-center max-w-3xl">
+          <h2 className="text-3xl md:text-4xl font-bold mb-4 text-foreground">
+            Still have questions?
+          </h2>
+          <p className="text-lg text-muted-foreground mb-8">
+            Our 24/7 customer support team is ready to help. Contact us anytime.
           </p>
-          <Button 
-            size="lg" 
-            variant="secondary"
-            onClick={() => (window.location.href = "/contact")}
-          >
-            Contact Us <ArrowRight className="ml-2 w-4 h-4" />
-          </Button>
+          <div className="flex gap-4 justify-center flex-wrap">
+            <Button 
+              size="lg" 
+              className="bg-primary hover:bg-primary/90 gap-2"
+              onClick={() => (window.location.href = getLoginUrl())}
+            >
+              Apply Now <ArrowRight className="w-4 h-4" />
+            </Button>
+            <Button 
+              size="lg" 
+              variant="outline"
+              onClick={() => (window.location.href = "/contact")}
+            >
+              Contact Support
+            </Button>
+          </div>
         </div>
       </section>
 
       {/* Footer */}
-      <footer className="border-t border-border bg-background py-12">
+      <footer className="border-t border-border/40 bg-background py-12">
         <div className="container">
           <div className="grid md:grid-cols-4 gap-8 mb-8">
             <div>
               <h3 className="font-semibold mb-4">NALA</h3>
-              <p className="text-sm text-muted-foreground">Fast, simple, and honest personal loans for South Africa.</p>
+              <p className="text-sm text-muted-foreground">Fast, transparent personal loans for South Africans.</p>
             </div>
             <div>
               <h4 className="font-semibold mb-4">Product</h4>
-              <ul className="space-y-2 text-sm">
-                <li><a href="/" className="text-muted-foreground hover:text-foreground">Home</a></li>
-                <li><a href="/about" className="text-muted-foreground hover:text-foreground">About</a></li>
-                <li><a href="/faq" className="text-muted-foreground hover:text-foreground">FAQ</a></li>
+              <ul className="space-y-2 text-sm text-muted-foreground">
+                <li><a href="/" className="hover:text-primary transition-colors">Home</a></li>
+                <li><a href="/#calculator" className="hover:text-primary transition-colors">Calculator</a></li>
+                <li><a href="/faq" className="hover:text-primary transition-colors">FAQ</a></li>
               </ul>
             </div>
             <div>
-              <h4 className="font-semibold mb-4">Company</h4>
-              <ul className="space-y-2 text-sm">
-                <li><a href="/blog" className="text-muted-foreground hover:text-foreground">Blog</a></li>
-                <li><a href="/contact" className="text-muted-foreground hover:text-foreground">Contact</a></li>
+              <h4 className="font-semibold mb-4">Support</h4>
+              <ul className="space-y-2 text-sm text-muted-foreground">
+                <li><a href="/contact" className="hover:text-primary transition-colors">Contact</a></li>
+                <li><a href="/blog" className="hover:text-primary transition-colors">Blog</a></li>
+                <li><a href="#" className="hover:text-primary transition-colors">Privacy</a></li>
               </ul>
             </div>
             <div>
               <h4 className="font-semibold mb-4">Legal</h4>
-              <ul className="space-y-2 text-sm">
-                <li><a href="#" className="text-muted-foreground hover:text-foreground">Privacy</a></li>
-                <li><a href="#" className="text-muted-foreground hover:text-foreground">Terms</a></li>
+              <ul className="space-y-2 text-sm text-muted-foreground">
+                <li><a href="#" className="hover:text-primary transition-colors">Terms</a></li>
+                <li><a href="#" className="hover:text-primary transition-colors">Privacy Policy</a></li>
+                <li><a href="#" className="hover:text-primary transition-colors">Compliance</a></li>
               </ul>
             </div>
           </div>
-          <div className="border-t border-border pt-8 text-center text-sm text-muted-foreground">
-            <p>&copy; 2026 NALA Personal Loans. All rights reserved.</p>
+          <div className="border-t border-border/40 pt-8 text-center text-sm text-muted-foreground">
+            <p>&copy; 2026 NALA Personal Loans. All rights reserved. Licensed lender in South Africa.</p>
           </div>
         </div>
       </footer>
