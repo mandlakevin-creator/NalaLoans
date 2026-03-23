@@ -75,9 +75,11 @@ export default function Home() {
                 </Button>
               </>
             ) : (
-              <Button size="sm" className="bg-primary hover:bg-primary/90" onClick={() => (window.location.href = getLoginUrl())}>
-                Login
-              </Button>
+              <>
+                <Button size="sm" className="bg-primary hover:bg-primary/90" onClick={() => (window.location.href = '/email-login')}>
+                  Login
+                </Button>
+              </>
             )}
           </div>
         </div>

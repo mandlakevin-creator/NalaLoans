@@ -111,6 +111,38 @@ export async function getUserById(id: number) {
   return result.length > 0 ? result[0] : undefined;
 }
 
+export async function getUserByEmail(email: string) {
+  const db = await getDb();
+  if (!db) return null;
+
+  const result = await db.select().from(users).where(eq(users.email, email)).limit(1);
+  return result.length > 0 ? result[0] : null;
+}
+
+export async function createEmailUser(email: string, name?: string) {
+  const db = await getDb();
+  if (!db) return null;
+
+  // Generate a unique openId for email-based users
+  const openId = `email_${email}_${Date.now()}`;
+  
+  try {
+    await db.insert(users).values({
+      openId,
+      email,
+      name: name || email.split('@')[0],
+      loginMethod: 'email',
+      emailVerified: false,
+      lastSignedIn: new Date(),
+    });
+    
+    return await getUserByEmail(email);
+  } catch (error) {
+    console.error("Failed to create email user:", error);
+    return null;
+  }
+}
+
 export async function updateUserProfile(
   userId: number,
   data: Partial<InsertUser>

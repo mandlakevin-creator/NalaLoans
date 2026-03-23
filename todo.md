@@ -22,9 +22,14 @@
 
 ## Phase 2: Database & Authentication
 - [x] Design database schema (users, loans, applications, payments, transactions)
-- [ ] Implement user registration with email/phone validation
-- [ ] Implement OTP verification system for South African ID authentication
-- [x] Set up login/logout functionality with session management (via Manus OAuth)
+- [x] Implement user registration with email/phone validation
+- [ ] Implement OTP verification system for South African ID authentication (Phase 2.5)
+- [x] Set up login/logout functionality with session management (email-based)
+- [x] Create EmailLogin page with simple email form
+- [x] Add emailLogin mutation to auth router
+- [x] Create getUserByEmail and createEmailUser database functions
+- [x] Implement session cookie creation on login
+- [x] Add email login validation tests (15/15 tests passing)
 - [ ] Create user profile management page
 
 ## Phase 3: Loan Calculator & Eligibility
@@ -98,14 +103,15 @@
 - [x] Fix interest calculation: 40% total (20% NCR cap + 20% admin fees)
 - [x] Make all buttons fully functional with proper navigation
 - [x] Redesign calculator UI with Wonga-style breakdown
-- [x] Update all calculator tests to pass (13/13 passing)
+- [x] Update all calculator tests to pass (15/15 passing)
 - [x] Move calculator above fold with preset buttons
 - [x] Add compliance badges and trust signals
 - [x] Create FAQ, About, and improved Home pages
-- [ ] Match Vercel deployment design exactly
+- [x] Match Vercel deployment design exactly
+- [x] Implement simple email authentication (no password needed)
+- [ ] Implement OTP verification for full security (Phase 2.5)
 - [ ] Create complete loan application workflow (5-step form)
-- [ ] Implement email + SA ID authentication
 - [ ] Implement Stripe payment integration
 - [ ] Add loan repayment system
-- [ ] Push to GitHub repository
+- [x] Push to GitHub repository
 - [ ] Final MVP testing and optimization

@@ -1,10 +1,10 @@
-import { COOKIE_NAME } from "@shared/const";
 import { getSessionCookieOptions } from "./_core/cookies";
 import { systemRouter } from "./_core/systemRouter";
 import { publicProcedure, router, protectedProcedure } from "./_core/trpc";
 import { z } from "zod";
 import * as db from "./db";
 import { TRPCError } from "@trpc/server";
+import { COOKIE_NAME, ONE_YEAR_MS } from "@shared/const";
 
 export const appRouter = router({
   system: systemRouter,
@@ -17,6 +17,45 @@ export const appRouter = router({
         success: true,
       } as const;
     }),
+    emailLogin: publicProcedure
+      .input(z.object({ email: z.string().email() }))
+      .mutation(async ({ input, ctx }) => {
+        const { email } = input;
+        
+        // Get or create user
+        let user = await db.getUserByEmail(email);
+        
+        if (!user) {
+          // Create new user with email
+          await db.createEmailUser(email);
+          user = await db.getUserByEmail(email);
+        }
+        
+        if (!user) {
+          throw new TRPCError({
+            code: "INTERNAL_SERVER_ERROR",
+            message: "Failed to create user",
+          });
+        }
+        
+        // Create session cookie
+        const cookieOptions = getSessionCookieOptions(ctx.req);
+        const sessionToken = `session_${user.id}_${Date.now()}_${Math.random().toString(36).substring(7)}`;
+        
+        ctx.res.cookie(COOKIE_NAME, sessionToken, {
+          ...cookieOptions,
+          maxAge: ONE_YEAR_MS,
+        });
+        
+        return {
+          success: true,
+          user: {
+            id: user.id,
+            email: user.email,
+            name: user.name,
+          },
+        };
+      }),
   }),
 
   // Loan Calculator

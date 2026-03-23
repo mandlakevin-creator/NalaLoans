@@ -12,6 +12,7 @@ import Contact from "./pages/Contact";
 import Dashboard from "./pages/Dashboard";
 import LoanApplication from "./pages/LoanApplication";
 import EligibilityChecker from "./pages/EligibilityChecker";
+import EmailLogin from "./pages/EmailLogin";
 
 function Router() {
   return (
@@ -21,6 +22,7 @@ function Router() {
       <Route path={"/faq"} component={FAQ} />
       <Route path={"/blog"} component={Blog} />
       <Route path={"/contact"} component={Contact} />
+      <Route path={"/email-login"} component={EmailLogin} />
       <Route path={"/dashboard"} component={Dashboard} />
       <Route path={"/apply"} component={LoanApplication} />
       <Route path={"/eligibility"} component={EligibilityChecker} />
